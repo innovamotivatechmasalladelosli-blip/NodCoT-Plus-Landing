@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodCoT+ â€” La plataforma que lo cambia todo</title>
+  <meta name="description" content="NodCoT+ es la plataforma de nodos de nueva generaciÃ³n. Visual para creadores, potente para desarrolladores. Con ICod, IA integrada, marketplace y mÃ¡s.">
+  <meta property="og:title" content="NodCoT+ â€” La plataforma que lo cambia todo" />
+  <meta property="og:description" content="Visual para creadores. Potente para desarrolladores. PrÃ³ximamente." />
+  <meta property="og:image" content="https://innovamotivatechmasalladelosli-blip.github.io/NodCoT-Plus-Landing/og.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080c14;
+      --surface: #0f1623;
+      --border: #1e2d45;
+      --accent: #3b82f6;
+      --accent2: #8b5cf6;
+      --accent3: #06b6d4;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --glow: rgba(59,130,246,0.35);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* â”€â”€ GRID BG â”€â”€ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* â”€â”€ NAV â”€â”€ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background: rgba(8,12,20,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* â”€â”€ HERO â”€â”€ */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+    }
+
+    .hero-orb {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-orb-2 {
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%);
+      top: 30%; left: 60%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      border: 1px solid rgba(59,130,246,0.3);
+      background: rgba(59,130,246,0.08);
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 28px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .hero-tag span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      max-width: 900px;
+    }
+
+    h1 .grad {
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    /* â”€â”€ WAITLIST FORM â”€â”€ */
+    .waitlist-form {
+      display: flex;
+      gap: 12px;
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .waitlist-form input {
+      flex: 1;
+      min-width: 240px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .waitlist-form input:focus { border-color: var(--accent); }
+    .waitlist-form input::placeholder { color: var(--muted); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s, transform 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .form-note { font-size: 0.78rem; color: var(--muted); }
+
+    /* â”€â”€ STATS BAR â”€â”€ */
+    .stats {
+      position: relative; z-index: 1;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+    /* â”€â”€ FEATURES â”€â”€ */
+    .section {
+      position: relative; z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 24px;
+    }
+
+    .section-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 60px;
+      max-width: 600px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(59,130,246,0.04), transparent);
+      pointer-events: none;
+    }
+
+    .feature-card:hover { border-color: rgba(59,130,246,0.4); transform: translateY(-4px); }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .feature-badge {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(59,130,246,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(59,130,246,0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .feature-badge.purple { background: rgba(139,92,246,0.1); color: #a78bfa; border-color: rgba(139,92,246,0.2); }
+    .feature-badge.cyan   { background: rgba(6,182,212,0.1);  color: #22d3ee;  border-color: rgba(6,182,212,0.2); }
+    .feature-badge.green  { background: rgba(34,197,94,0.1);  color: #4ade80;  border-color: rgba(34,197,94,0.2); }
+
+    /* â”€â”€ ICOD PREVIEW â”€â”€ */
+    .icod-section {
+      position: relative; z-index: 1;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 100px 24px;
+    }
+
+    .icod-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .icod-inner { grid-template-columns: 1fr; }
+    }
+
+    .code-block {
+      background: #0a0f1a;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: #0c1220;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ef4444; }
+    .dot-y { background: #f59e0b; }
+    .dot-g { background: #22c55e; }
+
+    .code-filename { font-size: 0.78rem; color: var(--muted); margin-left: 8px; font-family: 'JetBrains Mono', monospace; }
+
+    .code-body {
+      padding: 28px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: #94a3b8;
+    }
+
+    .kw  { color: #818cf8; }
+    .fn  { color: #38bdf8; }
+    .str { color: #4ade80; }
+    .cm  { color: #475569; }
+    .op  { color: #f472b6; }
+    .num { color: #fb923c; }
+
+    /* â”€â”€ CTA â”€â”€ */
+    .cta {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 120px 24px;
+    }
+
+    .cta-card {
+      max-width: 700px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08));
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 28px;
+      padding: 64px 40px;
+    }
+
+    /* â”€â”€ FOOTER â”€â”€ */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* â”€â”€ SUCCESS MSG â”€â”€ */
+    #success-msg {
+      display: none;
+      margin-top: 16px;
+      font-size: 0.9rem;
+      color: #4ade80;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">NodCoT+</div>
+  <span class="nav-badge">PrÃ³ximamente</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb"></div>
+  <div class="hero-orb-2"></div>
+
+  <div class="hero-tag">
+    <span></span> En desarrollo activo â€” 2026
+  </div>
+
+  <h1>
+    La plataforma que<br/>
+    <span class="grad">lo cambia todo</span>
+  </h1>
+
+  <p class="hero-sub">
+    Para creadores, para desarrolladores, para todos.<br/>
+    NodCoT+ es el sistema de nodos de nueva generaciÃ³n con canvas visual,
+    lenguaje propio <strong style="color:var(--text)">ICod</strong>, IA integrada,
+    simulador en vivo y marketplace comunitario.
+  </p>
+
+  <form class="waitlist-form" onsubmit="joinWaitlist(event)">
+    <input type="email" id="email-input" placeholder="tu@correo.com" required />
+    <button type="submit" class="btn-primary">Unirme a la lista â†’</button>
+  </form>
+  <p class="form-note">SÃ© el primero en acceder. Sin spam, jamÃ¡s.</p>
+  <p id="success-msg">ðŸŽ‰ Â¡Ya estÃ¡s en la lista! Te avisaremos pronto.</p>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">200+</div>
+    <div class="stat-label">Nodos planificados</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">1</div>
+    <div class="stat-label">Lenguaje propio (ICod)</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">âˆž</div>
+    <div class="stat-label">Posibilidades</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">0</div>
+    <div class="stat-label">CÃ³digo necesario para empezar</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="section-tag">CaracterÃ­sticas</div>
+  <h2 class="section-title">Todo lo que necesitas, en un solo lugar</h2>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">ðŸŽ¨</span>
+      <div class="feature-name">Canvas Visual No-Code</div>
+      <p class="feature-desc">Conecta nodos con drag & drop. Sin escribir una lÃ­nea de cÃ³digo, construye flujos, automatizaciones, sitios web y mucho mÃ¡s con controles visuales intuitivos.</p>
+      <span class="feature-badge">Para todos</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">âš¡</span>
+      <div class="feature-name">Lenguaje ICod</div>
+      <p class="feature-desc">El primer lenguaje puente bit-comprimido que une JavaScript, Python, Rust y mÃ¡s en una sintaxis limpia y ultrarrÃ¡pida. DiseÃ±ado para flujos de datos modernos.</p>
+      <span class="feature-badge purple">Pro-Code</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">ðŸŒ</span>
+      <div class="feature-name">Navegador / Simulador en Vivo</div>
+      <p class="feature-desc">Ve tu sitio web, documento o flujo renderizarse en tiempo real mientras construyes. Panel interactivo con preview responsive, simulaciÃ³n de datos y mÃ¡s.</p>
+      <span class="feature-badge cyan">Tiempo Real</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">ðŸ¤–</span>
+      <div class="feature-name">IA Integrada como Nodos</div>
+      <p class="feature-desc">Conecta Gemini, GPT, Ollama y otros modelos directamente en tu flujo. La IA no es un extra â€” es parte del sistema desde el primer dÃ­a.</p>
+      <span class="feature-badge purple">IA Nativa</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">ðŸŽ¨</span>
+      <div class="feature-name">Extractor de Colores & Estilos</div>
+      <p class="feature-desc">Pega un enlace o sube una imagen y el algoritmo extrae automÃ¡ticamente la paleta, tipografÃ­as y tokens de diseÃ±o. AplÃ­calos a tu proyecto con un clic.</p>
+      <span class="feature-badge green">InnovaciÃ³n</span>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">ðŸª</span>
+      <div class="feature-name">Marketplace Comunitario</div>
+      <p class="feature-desc">Descubre, comparte y vende nodos creados por la comunidad. GuÃ­as interactivas para configurar dominios, SSL, pagos y mÃ¡s â€” todo sin salir de NodCoT+.</p>
+      <span class="feature-badge">Comunidad</span>
+    </div>
+  </div>
+</section>
+
+<!-- ICOD PREVIEW -->
+<section class="icod-section">
+  <div class="icod-inner">
+    <div>
+      <div class="section-tag">El Lenguaje ICod</div>
+      <h2 class="section-title" style="margin-bottom:20px">CÃ³digo que habla todos los idiomas</h2>
+      <p style="color:var(--muted); line-height:1.8; margin-bottom:24px;">
+        ICod es el pegamento entre lenguajes. Mezcla Python para IA, JavaScript para web y Rust para velocidad â€” en el mismo flujo, sin fricciÃ³n, comprimido en bits para ejecuciÃ³n instantÃ¡nea.
+      </p>
+      <p style="color:var(--muted); line-height:1.8;">
+        Los desarrolladores lo escriben. NodCoT+ lo convierte automÃ¡ticamente en controles visuales que cualquier persona puede usar.
+      </p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="code-filename">harvest_and_build.icod</span>
+      </div>
+      <div class="code-body">
+<span class="cm">// ICod â€” Extrae colores y construye web</span>
+
+<span class="kw">flow</span> <span class="fn">buildSiteFromBrand</span>(<span class="str">url</span>) {
+
+  <span class="cm">// Extrae paleta con K-Means en bits</span>
+  <span class="kw">let</span> palette <span class="op">=</span> <span class="fn">@harvest</span>(url) <span class="op">|></span>
+    <span class="fn">kmeans</span>({ clusters: <span class="num">6</span>, space: <span class="str">"LAB"</span> }) <span class="op">|></span>
+    <span class="fn">toDesignTokens</span>()
+
+  <span class="cm">// Genera web con tokens + IA</span>
+  <span class="kw">let</span> site <span class="op">=</span> <span class="fn">@ai.generate</span>({
+    model: <span class="str">"gemini"</span>,
+    tokens: palette,
+    prompt: <span class="str">"landing moderna"</span>
+  })
+
+  <span class="cm">// Emite al Live Browser</span>
+  <span class="kw">emit</span> <span class="fn">@preview</span>(site)
+}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta">
+  <div class="cta-card">
+    <div class="hero-tag" style="justify-content:center">
+      <span></span> Lista de espera abierta
+    </div>
+    <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;letter-spacing:-1px;margin-bottom:16px;">
+      Â¿Listo para el futuro<br/>del desarrollo?
+    </h2>
+    <p style="color:var(--muted);margin-bottom:40px;line-height:1.7;">
+      Ãšnete ahora y obtÃ©n acceso anticipado, nodos exclusivos<br/>y la posibilidad de dar forma al producto.
+    </p>
+    <form class="waitlist-form" style="margin:0 auto" onsubmit="joinWaitlist(event)">
+      <input type="email" placeholder="tu@correo.com" required />
+      <button type="submit" class="btn-primary">Quiero acceso â†’</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:8px;">
+    <strong style="color:var(--text)">NodCoT+</strong> â€” Desarrollado con ðŸ”¥ por <strong style="color:var(--text)">ArkanaWords</strong>
+  </p>
+  <p>Â© 2026 ArkanaWords. Todos los derechos reservados. Â· <a href="mailto:innovamotivatechmasalladelosli@gmail.com">Contacto</a></p>
+</footer>
+
+<script>
+  function joinWaitlist(e) {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.querySelector('input[type="email"]').value;
+
+    // Guardar en localStorage como lista local (luego puedes conectar un backend)
+    const list = JSON.parse(localStorage.getItem('nodcot_waitlist') || '[]');
+    if (!list.includes(email)) list.push(email);
+    localStorage.setItem('nodcot_waitlist', JSON.stringify(list));
+
+    form.style.display = 'none';
+    const msg = document.getElementById('success-msg') || document.createElement('p');
+    msg.style.display = 'block';
+    msg.style.color = '#4ade80';
+    msg.style.fontWeight = '600';
+    msg.style.marginTop = '16px';
+    msg.textContent = 'ðŸŽ‰ Â¡Ya estÃ¡s en la lista! Te avisaremos pronto.';
+    form.parentNode.appendChild(msg);
+  }
+
+  // AnimaciÃ³n de apariciÃ³n al hacer scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.feature-card').forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(30px)';
+    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease, border-color 0.3s';
+    observer.observe(card);
+  });
+</script>
+</body>
+</html>
