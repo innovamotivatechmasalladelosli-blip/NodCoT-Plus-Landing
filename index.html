@@ -3,23 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NodCoT+ — Visual Node System & Polyglot Engine</title>
+  <title>NodCoT+ — Construcción por Nodos, Código e Inteligencia Artificial</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #050505;
-      --bg-elevated: #0d0d0d;
-      --surface: #141414;
-      --surface-border: #222222;
-      --border-light: #333333;
-      --text: #f2f2f2;
-      --text-muted: #888888;
-      --text-dim: #444444;
-      --accent: #ffffff;
-      --accent-gray: #a3a3a3;
+      --bg: #040406;
+      --surface: #0c0d12;
+      --surface-card: rgba(16, 17, 24, 0.7);
+      --border: #1a1c24;
+      --border-hover: #33384a;
+      --text: #f4f5f8;
+      --text-muted: #8b90a0;
       --mono: 'JetBrains Mono', monospace;
       --sans: 'Space Grotesk', -apple-system, sans-serif;
     }
@@ -31,10 +28,10 @@
       color: var(--text);
       font-family: var(--sans);
       overflow-x: hidden;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
-    /* ── FONDO NEGRO Y GRIS CON MOVIMIENTO ORGÁNICO Y RUIDO ── */
+    /* ── FONDO NEGRO/GRIS DINÁMICO CON LUCES EN MOVIMIENTO Y RUIDO ── */
     #ambient-canvas {
       position: fixed;
       inset: 0;
@@ -44,16 +41,16 @@
       pointer-events: none;
     }
 
-    .noise-filter {
+    .noise-overlay {
       position: fixed;
       inset: 0;
       z-index: 1;
       pointer-events: none;
-      opacity: 0.08;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.09;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     }
 
-    .wrapper {
+    .content-wrapper {
       position: relative;
       z-index: 2;
       min-height: 100vh;
@@ -61,145 +58,111 @@
       flex-direction: column;
     }
 
-    /* ── HEADER MINIMALISTA ── */
+    /* ── HEADER LIMPIO (BOTÓN OCULTO) ── */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px 36px;
-      border-bottom: 1px solid var(--surface-border);
-      background: rgba(5,5,5,0.7);
-      backdrop-filter: blur(12px);
+      padding: 24px 40px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(4, 4, 6, 0.75);
+      backdrop-filter: blur(16px);
     }
 
+    /* El logo es el disparador secreto: 5 clics abren el Studio */
     .brand {
       font-family: var(--mono);
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 1.1rem;
       letter-spacing: -0.5px;
       color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .brand span {
-      background: #222;
-      color: #999;
-      font-size: 0.65rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid #333;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .btn-admin {
-      background: transparent;
-      border: 1px solid var(--border-light);
-      color: var(--text-muted);
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      padding: 7px 14px;
-      border-radius: 4px;
       cursor: pointer;
-      transition: all 0.2s;
+      user-select: none;
+      transition: opacity 0.2s;
     }
 
-    .btn-admin:hover {
-      color: var(--text);
-      border-color: #666;
-      background: #111;
+    .brand:hover {
+      opacity: 0.9;
     }
 
-    /* ── HERO BRUTALISTA / TÉCNICO ── */
+    .header-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* ── HERO ── */
     .hero {
-      max-width: 980px;
-      margin: 80px auto 40px;
+      max-width: 960px;
+      margin: 90px auto 40px;
       padding: 0 24px;
       text-align: left;
     }
 
-    .tag-line {
+    .pill {
+      display: inline-block;
       font-family: var(--mono);
       font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .tag-line::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: #888;
-      border-radius: 50%;
+      color: #aaa;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
     }
 
     h1 {
-      font-size: clamp(2.5rem, 6vw, 4.8rem);
+      font-size: clamp(2.6rem, 6.5vw, 5rem);
       font-weight: 700;
       line-height: 1.05;
       letter-spacing: -2px;
-      color: #ffffff;
       margin-bottom: 24px;
     }
 
-    h1 em {
-      font-style: normal;
-      color: #777;
+    h1 span {
+      color: #666a7a;
     }
 
-    .lead {
-      font-size: 1.15rem;
+    .hero-desc {
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
       color: var(--text-muted);
-      max-width: 640px;
+      max-width: 680px;
       margin-bottom: 40px;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
-    .waitlist-box {
+    .waitlist-form {
       display: flex;
       gap: 8px;
-      max-width: 460px;
-      background: var(--bg-elevated);
+      max-width: 480px;
+      background: rgba(255, 255, 255, 0.03);
       padding: 6px;
-      border: 1px solid var(--border-light);
-      border-radius: 6px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
     }
 
-    .waitlist-box input {
+    .waitlist-form input {
       flex: 1;
       background: transparent;
       border: none;
       color: #fff;
-      padding: 10px 14px;
-      font-family: var(--mono);
-      font-size: 0.85rem;
+      padding: 10px 16px;
+      font-family: var(--sans);
+      font-size: 0.9rem;
       outline: none;
     }
 
-    .waitlist-box input::placeholder {
-      color: var(--text-dim);
-    }
-
     .btn-submit {
-      background: #f2f2f2;
-      color: #000;
+      background: #f4f5f8;
+      color: #040406;
       border: none;
-      padding: 10px 20px;
-      font-family: var(--mono);
-      font-size: 0.8rem;
+      padding: 12px 24px;
+      border-radius: 6px;
       font-weight: 700;
-      border-radius: 4px;
+      font-size: 0.85rem;
       cursor: pointer;
       transition: opacity 0.2s;
     }
@@ -208,142 +171,141 @@
       opacity: 0.85;
     }
 
-    /* ── ESPECIFICACIONES / GRID TÉCNICO ── */
-    .specs {
-      max-width: 980px;
+    /* ── PILARES DE LA HERRAMIENTA ── */
+    .features-section {
+      max-width: 960px;
       margin: 80px auto;
       padding: 0 24px;
+    }
+
+    .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 20px;
     }
 
-    .spec-card {
-      background: rgba(18,18,18,0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 6px;
-      padding: 24px;
-      transition: border-color 0.2s;
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      transition: border-color 0.25s, transform 0.25s;
     }
 
-    .spec-card:hover {
-      border-color: #444;
+    .card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
     }
 
-    .spec-label {
+    .card-badge {
       font-family: var(--mono);
       font-size: 0.7rem;
-      color: var(--text-dim);
+      color: #777d90;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
     }
 
-    .spec-title {
-      font-size: 1.1rem;
+    .card-title {
+      font-size: 1.15rem;
       font-weight: 600;
+      margin-bottom: 10px;
       color: var(--text);
-      margin-bottom: 8px;
     }
 
-    .spec-desc {
-      font-size: 0.85rem;
+    .card-desc {
+      font-size: 0.9rem;
       color: var(--text-muted);
       line-height: 1.6;
     }
 
-    /* ── MODAL LOGIN ADMIN ── */
-    #login-modal {
+    /* ── MODAL SECRETO DE ACCESO ── */
+    #secret-modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(12px);
       z-index: 1000;
       align-items: center;
       justify-content: center;
     }
 
-    .login-dialog {
-      background: #0f0f0f;
-      border: 1px solid #2a2a2a;
-      border-radius: 8px;
+    .secret-box {
+      background: #0d0e14;
+      border: 1px solid #222533;
+      border-radius: 10px;
       width: 100%;
-      max-width: 360px;
-      padding: 32px;
+      max-width: 380px;
+      padding: 36px 30px;
       text-align: center;
     }
 
-    .login-dialog h3 {
+    .secret-box h3 {
       font-family: var(--mono);
-      font-size: 1rem;
+      font-size: 1.1rem;
       margin-bottom: 8px;
     }
 
-    .login-dialog p {
-      font-size: 0.8rem;
+    .secret-box p {
+      font-size: 0.82rem;
       color: var(--text-muted);
       margin-bottom: 24px;
     }
 
-    .login-input {
+    .secret-input {
       width: 100%;
-      background: #181818;
-      border: 1px solid #333;
+      background: #141620;
+      border: 1px solid #2c3042;
       padding: 12px;
-      border-radius: 4px;
+      border-radius: 6px;
       color: #fff;
       font-family: var(--mono);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       text-align: center;
       margin-bottom: 16px;
       outline: none;
     }
 
-    .login-input:focus {
-      border-color: #666;
+    .secret-input:focus {
+      border-color: #555e80;
     }
 
-    /* ── HERRAMIENTA / STUDIO COMPLETO (PANTALLA DE ADMIN) ── */
+    /* ── HERRAMIENTA / STUDIO ACTIVO ── */
     #studio-app {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 2000;
-      background: #070707;
+      background: #06070a;
       flex-direction: column;
     }
 
     .studio-bar {
-      height: 48px;
-      background: #0e0e0e;
-      border-bottom: 1px solid #1f1f1f;
+      height: 50px;
+      background: #0b0c12;
+      border-bottom: 1px solid #1a1c26;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
+      padding: 0 20px;
       font-family: var(--mono);
       font-size: 0.8rem;
     }
 
-    .studio-tools {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
     .s-btn {
-      background: #1a1a1a;
-      border: 1px solid #2e2e2e;
+      background: #141722;
+      border: 1px solid #282c3f;
       color: #ccc;
-      padding: 6px 12px;
-      border-radius: 4px;
+      padding: 6px 14px;
+      border-radius: 5px;
       font-family: inherit;
       font-size: 0.75rem;
       cursor: pointer;
     }
 
     .s-btn:hover {
-      background: #252525;
+      background: #1e2233;
       color: #fff;
     }
 
@@ -354,10 +316,6 @@
       border: 1px solid #fff;
     }
 
-    .s-btn-primary:hover {
-      background: #e0e0e0;
-    }
-
     .studio-body {
       flex: 1;
       display: flex;
@@ -365,96 +323,93 @@
       overflow: hidden;
     }
 
-    /* Canvas de Nodos */
     .studio-canvas {
       flex: 1;
       position: relative;
-      background-size: 24px 24px;
-      background-image: radial-gradient(circle, #222 1px, transparent 1px);
+      background-size: 26px 26px;
+      background-image: radial-gradient(circle, #1a1d28 1px, transparent 1px);
       overflow: auto;
     }
 
-    /* Nodo */
     .c-node {
       position: absolute;
-      width: 290px;
-      background: #111111;
-      border: 1px solid #282828;
-      border-radius: 6px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.8);
+      width: 300px;
+      background: #0e1017;
+      border: 1px solid #212534;
+      border-radius: 8px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.85);
       overflow: hidden;
     }
 
     .c-node-head {
-      padding: 10px 14px;
-      background: #181818;
-      border-bottom: 1px solid #242424;
+      padding: 12px 16px;
+      background: #151822;
+      border-bottom: 1px solid #1f2331;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-family: var(--mono);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 600;
     }
 
     .c-node-body {
-      padding: 14px;
+      padding: 16px;
     }
 
-    .c-input-label {
+    .c-label {
       font-family: var(--mono);
-      font-size: 0.68rem;
-      color: #888;
+      font-size: 0.7rem;
+      color: #7b8296;
       margin-bottom: 6px;
       display: block;
     }
 
     .c-field {
       width: 100%;
-      background: #090909;
-      border: 1px solid #2b2b2b;
+      background: #090a0f;
+      border: 1px solid #212534;
       padding: 8px 10px;
       color: #fff;
       font-family: var(--mono);
-      font-size: 0.75rem;
-      border-radius: 4px;
+      font-size: 0.78rem;
+      border-radius: 5px;
       margin-bottom: 12px;
       outline: none;
     }
 
     .palette-row {
       display: flex;
-      gap: 4px;
+      gap: 5px;
       margin-top: 4px;
     }
 
     .color-block {
       flex: 1;
-      height: 22px;
-      border-radius: 3px;
-      border: 1px solid #333;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Live Preview Panel */
     .studio-preview {
-      width: 440px;
-      border-left: 1px solid #222;
+      width: 460px;
+      border-left: 1px solid #1a1c26;
       background: #000;
       display: flex;
       flex-direction: column;
     }
 
     .preview-header {
-      height: 36px;
-      background: #141414;
-      border-bottom: 1px solid #222;
-      padding: 0 12px;
+      height: 38px;
+      background: #0e1017;
+      border-bottom: 1px solid #1a1c26;
+      padding: 0 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-family: var(--mono);
       font-size: 0.72rem;
-      color: #888;
+      color: #7b8296;
     }
 
     .preview-frame {
@@ -464,30 +419,29 @@
       background: #fff;
     }
 
-    /* Terminal Inferior */
     .studio-term {
-      height: 160px;
-      border-top: 1px solid #222;
-      background: #0a0a0a;
+      height: 170px;
+      border-top: 1px solid #1a1c26;
+      background: #08090d;
       display: flex;
       flex-direction: column;
       font-family: var(--mono);
-      font-size: 0.75rem;
+      font-size: 0.76rem;
     }
 
     .term-title {
-      padding: 4px 12px;
-      background: #121212;
-      color: #666;
-      font-size: 0.7rem;
-      border-bottom: 1px solid #1a1a1a;
+      padding: 6px 14px;
+      background: #0e1017;
+      color: #666d80;
+      font-size: 0.72rem;
+      border-bottom: 1px solid #161822;
     }
 
     .term-log {
       flex: 1;
       padding: 10px 14px;
       overflow-y: auto;
-      color: #aaa;
+      color: #9ea5ba;
     }
 
     .term-log div { margin-bottom: 4px; }
@@ -495,69 +449,93 @@
 </head>
 <body>
 
-  <!-- FONDO ANIMADO NEGRO Y GRIS (ONDAS DE HUMO Y MOVIMIENTO ORGÁNICO) -->
+  <!-- FONDO CON LUCES EN MOVIMIENTO + RUIDO -->
   <canvas id="ambient-canvas"></canvas>
-  <div class="noise-filter"></div>
+  <div class="noise-overlay"></div>
 
   <!-- VISTA PÚBLICA / LANDING -->
-  <div class="wrapper" id="public-view">
+  <div class="content-wrapper" id="public-view">
     <header>
-      <div class="brand">
-        NodCoT+ <span>DEV-PREVIEW</span>
+      <!-- Clic secreto: 5 toques en el logo abren el Studio -->
+      <div class="brand" id="brand-trigger" title="NodCoT+">
+        NodCoT+
       </div>
-      <div class="header-actions">
-        <button class="btn-admin" onclick="openLogin()">[ Entrar al Studio / Admin ]</button>
+      <div class="header-links">
+        <span>Comunidad & Flujos</span>
       </div>
     </header>
 
     <main class="hero">
-      <div class="tag-line">Motor de Nodos Visual & Lenguaje ICod</div>
+      <div class="pill">Plataforma de Automatización & Creación Visual</div>
       <h1>
-        Construcción visual.<br/>
-        <em>Rendimiento nativo en bits.</em>
+        Crea cualquier cosa con nodos.<br/>
+        <span>Para creadores y desarrolladores.</span>
       </h1>
-      <p class="lead">
-        La plataforma de flujos de trabajo que unifica interfaces No-Code para creadores
-        con ejecución de código políglota para ingenieros.
+      <p class="hero-desc">
+        Automatiza flujos, conecta inteligencias artificiales y construye sitios web completos
+        en un canvas visual intuitivo o usando código directamente. Con simulador en vivo,
+        nodos inteligentes de diseño y un marketplace comunitario.
       </p>
 
-      <form class="waitlist-box" onsubmit="handleWaitlist(event)">
-        <input type="email" placeholder="Introduce tu correo para acceso anticipado..." required />
-        <button type="submit" class="btn-submit">Registrarme</button>
+      <form class="waitlist-form" onsubmit="handleWaitlist(event)">
+        <input type="email" placeholder="Ingresa tu correo para acceso anticipado..." required />
+        <button type="submit" class="btn-submit">Unirme a la lista</button>
       </form>
-      <div id="wl-msg" style="display:none; margin-top:12px; font-family:var(--mono); font-size:0.75rem; color:#888;">
-        ✓ Correo registrado en la lista de espera.
+      <div id="wl-msg" style="display:none; margin-top:14px; font-family:var(--mono); font-size:0.8rem; color:#888;">
+        ✓ Correo registrado. Te notificaremos cuando se abran plazas.
       </div>
     </main>
 
-    <section class="specs">
-      <div class="spec-card">
-        <div class="spec-label">Arquitectura 01</div>
-        <div class="spec-title">Lenguaje ICod</div>
-        <div class="spec-desc">Bytecode empaquetado a 32 bits por instrucción. Conexión de bajo coste entre JavaScript, Python y entornos nativos.</div>
-      </div>
-      <div class="spec-card">
-        <div class="spec-label">Arquitectura 02</div>
-        <div class="spec-title">Simulador en Vivo</div>
-        <div class="spec-desc">Visualizador integrado en split-screen que renderiza en tiempo real los resultados generados por el flujo de nodos.</div>
-      </div>
-      <div class="spec-card">
-        <div class="spec-label">Arquitectura 03</div>
-        <div class="spec-title">Extracción de Estilos</div>
-        <div class="spec-desc">Algoritmo K-Means integrado que procesa documentos y URLs para derivar tokens de diseño y paletas accesibles.</div>
+    <section class="features-section">
+      <div class="features-grid">
+        <div class="card">
+          <div class="card-badge">01 · Visual & Código</div>
+          <div class="card-title">Conviven en el Mismo Lugar</div>
+          <p class="card-desc">Si no programas, conecta nodos visuales amigables. Si eres desarrollador, abre cualquier nodo para ver y editar su código en su lenguaje nativo ICod.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-badge">02 · Innovación</div>
+          <div class="card-title">Nodos de Diseño Inteligente</div>
+          <p class="card-desc">Pega el enlace de un sitio o sube un documento: el sistema analiza y extrae automáticamente su paleta de colores y estilos para usarlos en tus propias creaciones.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-badge">03 · Tiempo Real</div>
+          <div class="card-title">Simulador & Navegador en Vivo</div>
+          <p class="card-desc">Visualiza al instante cómo queda tu sitio web o qué datos genera tu flujo mientras vas construyendo, sin tener que configurar servidores ni levantar terminales.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-badge">04 · Control Total</div>
+          <div class="card-title">Terminal & Nodos Propios</div>
+          <p class="card-desc">Agrupa varios nodos que te gusten para crear tu propio nodo reutilizable sin código, o programa funciones avanzadas desde la terminal integrada.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-badge">05 · Inteligencia</div>
+          <div class="card-title">Conexión con IAs</div>
+          <p class="card-desc">Integra modelos de inteligencia artificial como un nodo más para generar texto, código, análisis o layouts dentro de tus flujos de trabajo.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-badge">06 · Ecosistema</div>
+          <div class="card-title">Comunidad & Marketplace</div>
+          <p class="card-desc">Descubre, descarga o vende funciones y nodos creados por otros, además de guías interactivas para configurar dominios, pagos y servicios con un clic.</p>
+        </div>
       </div>
     </section>
   </div>
 
-  <!-- MODAL DE ACCESO AL STUDIO -->
-  <div id="login-modal">
-    <div class="login-dialog">
-      <h3>Acceso a la Herramienta</h3>
-      <p>Introduce la clave para abrir el Studio de NodCoT+ directamente.</p>
-      <input type="password" id="admin-key" class="login-input" placeholder="Clave de acceso" onkeydown="if(event.key==='Enter')verifyAccess()"/>
-      <button class="btn-submit" style="width:100%;" onclick="verifyAccess()">Abrir Herramienta</button>
+  <!-- MODAL SECRETO (5 CLICS EN EL LOGO) -->
+  <div id="secret-modal">
+    <div class="secret-box">
+      <h3>Acceso al Studio</h3>
+      <p>Introduce la clave para desbloquear el entorno de desarrollo interactivo.</p>
+      <input type="password" id="secret-key" class="secret-input" placeholder="Clave de acceso" onkeydown="if(event.key==='Enter')verifySecret()"/>
+      <button class="btn-submit" style="width:100%; padding:12px;" onclick="verifySecret()">Abrir Studio</button>
       <div style="margin-top:16px;">
-        <a href="javascript:void(0)" onclick="closeLogin()" style="color:#666; font-family:var(--mono); font-size:0.7rem; text-decoration:none;">← Volver</a>
+        <a href="javascript:void(0)" onclick="closeSecret()" style="color:#666; font-family:var(--mono); font-size:0.75rem; text-decoration:none;">✕ Cancelar</a>
       </div>
     </div>
   </div>
@@ -567,12 +545,12 @@
     <div class="studio-bar">
       <div style="display:flex; align-items:center; gap:12px;">
         <strong>NodCoT+ Studio</strong>
-        <span style="color:#666;">| Entorno de Desarrollo Activo</span>
+        <span style="color:#666;">| Entorno Visual Activo</span>
       </div>
-      <div class="studio-tools">
+      <div style="display:flex; gap:8px;">
         <button class="s-btn s-btn-primary" onclick="runFlow()">▶ Ejecutar Flujo</button>
-        <button class="s-btn" onclick="togglePreview()">Visualizador</button>
-        <button class="s-btn" onclick="closeStudio()">Salir del Studio</button>
+        <button class="s-btn" onclick="togglePreview()">Simulador</button>
+        <button class="s-btn" onclick="closeStudio()">Cerrar Studio</button>
       </div>
     </div>
 
@@ -580,51 +558,49 @@
       <!-- CANVAS DE NODOS -->
       <div class="studio-canvas">
         
-        <!-- NODO 1: HARVESTER -->
+        <!-- NODO 1: EXTRACTOR DE COLOR -->
         <div class="c-node" style="left: 40px; top: 40px;">
           <div class="c-node-head">
             <span>Color & Style Harvester</span>
-            <span style="color:#888;">[K-Means]</span>
+            <span style="color:#888;">[Diseño]</span>
           </div>
           <div class="c-node-body">
-            <span class="c-input-label">URL o Documento Fuente</span>
-            <input type="text" class="c-field" id="src-url" value="https://brand-example.io" />
+            <span class="c-label">Sitio Web o Documento Fuente</span>
+            <input type="text" class="c-field" id="src-url" value="https://sitio-inspiracion.com" />
             
-            <span class="c-input-label">Paleta Generada (LAB Space)</span>
+            <span class="c-label">Paleta Detectada por Algoritmo</span>
             <div class="palette-row">
-              <div class="color-block" style="background:#f2f2f2;"></div>
-              <div class="color-block" style="background:#777777;"></div>
-              <div class="color-block" style="background:#3b82f6;"></div>
-              <div class="color-block" style="background:#111111;"></div>
+              <div class="color-block" style="background:#f4f5f8;"></div>
+              <div class="color-block" style="background:#4f9eff;"></div>
+              <div class="color-block" style="background:#a78bfa;"></div>
+              <div class="color-block" style="background:#0c0d12;"></div>
             </div>
           </div>
         </div>
 
-        <!-- NODO 2: AI SYNTH -->
-        <div class="c-node" style="left: 370px; top: 40px;">
+        <!-- NODO 2: IA SYNTH -->
+        <div class="c-node" style="left: 380px; top: 40px;">
           <div class="c-node-head">
-            <span>IA Layout Composer</span>
-            <span style="color:#888;">[Gemini]</span>
+            <span>IA Generador de Sitio</span>
+            <span style="color:#a78bfa;">[IA Hub]</span>
           </div>
           <div class="c-node-body">
-            <span class="c-input-label">Instrucción / Estructura</span>
-            <input type="text" class="c-field" id="ai-prompt" value="Landing minimalista de arquitectura y diseño" />
-            <span class="c-input-label">Modo de Generación</span>
-            <input type="text" class="c-field" value="Componentes React / HTML5" readonly style="color:#666;" />
+            <span class="c-label">Instrucción para el Sitio Web</span>
+            <input type="text" class="c-field" id="ai-prompt" value="Landing moderna para estudio creativo" />
+            <span class="c-label">Modelo Seleccionado</span>
+            <input type="text" class="c-field" value="Gemini 1.5 Pro / Claude" readonly style="color:#666;" />
           </div>
         </div>
 
-        <!-- NODO 3: LIVE BROWSER SINK -->
-        <div class="c-node" style="left: 700px; top: 40px;">
+        <!-- NODO 3: LIVE PREVIEW TARGET -->
+        <div class="c-node" style="left: 720px; top: 40px;">
           <div class="c-node-head">
-            <span>Live Preview Target</span>
-            <span style="color:#22c55e;">[Sincronizado]</span>
+            <span>Simulador en Vivo</span>
+            <span style="color:#34d399;">[En Tiempo Real]</span>
           </div>
           <div class="c-node-body">
-            <span class="c-input-label">Destino de Salida</span>
-            <input type="text" class="c-field" value="Split-Screen Sandbox" readonly />
-            <span class="c-input-label">Estado del Flujo</span>
-            <div style="font-family:var(--mono); font-size:0.75rem; color:#888;" id="flow-status">Listo para emitir.</div>
+            <span class="c-label">Estado de la Salida</span>
+            <div style="font-family:var(--mono); font-size:0.75rem; color:#888;" id="flow-status">Listo para simular.</div>
           </div>
         </div>
 
@@ -633,8 +609,8 @@
       <!-- SPLIT VIEW / NAVEGADOR EN VIVO -->
       <div class="studio-preview" id="preview-panel">
         <div class="preview-header">
-          <span>live://sandbox:preview</span>
-          <span>HTML / CSS Activo</span>
+          <span>live://nodco:simulador</span>
+          <span>Actualización en Vivo</span>
         </div>
         <iframe class="preview-frame" id="sim-frame"></iframe>
       </div>
@@ -642,82 +618,116 @@
 
     <!-- TERMINAL INFERIOR -->
     <div class="studio-term">
-      <div class="term-title">NodCoT+ Terminal / Runtime Logger</div>
+      <div class="term-title">Terminal Integrada NodCoT+</div>
       <div class="term-log" id="term-log">
-        <div>[ICod Runtime] Motor de 32 bits iniciado correctamente.</div>
-        <div>[Workspace] 3 nodos cargados en el canvas.</div>
+        <div>[NodCoT+ Engine] 3 nodos inicializados en el lienzo.</div>
       </div>
     </div>
   </div>
 
   <script>
-    // ── ANIMACIÓN DE FONDO: ONDAS DE HUMO Y MOVIMIENTO NEGRO/GRIS ──
+    // ── FONDO NEGRO Y GRIS DINÁMICO CON LUCES EN MOVIMIENTO Y RESPLANDOR ──
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
-    let width, height;
+    let W, H;
 
     function resize() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
     }
     resize();
     window.addEventListener('resize', resize);
 
-    let step = 0;
-    function renderAmbient() {
-      step += 0.003;
-      ctx.fillStyle = '#050505';
-      ctx.fillRect(0, 0, width, height);
+    // Luces suaves dinámicas en tonos neutros/grises oscuros y blancos suaves
+    const lights = [
+      { x: 0.2, y: 0.3, vx: 0.0008, vy: 0.0006, r: 420, baseAlpha: 0.14 },
+      { x: 0.8, y: 0.6, vx: -0.0007, vy: 0.0009, r: 480, baseAlpha: 0.16 },
+      { x: 0.5, y: 0.8, vx: 0.0006, vy: -0.0007, r: 380, baseAlpha: 0.12 },
+      { x: 0.7, y: 0.2, vx: -0.0009, vy: -0.0005, r: 350, baseAlpha: 0.15 },
+      { x: 0.3, y: 0.7, vx: 0.001, vy: 0.0004, r: 400, baseAlpha: 0.13 },
+    ];
 
-      // Dibujar 4 capas de ondas de gradiente gris sutil en movimiento
-      for (let i = 0; i < 4; i++) {
-        ctx.beginPath();
-        const yOffset = height * (0.3 + i * 0.18);
-        ctx.moveTo(0, height);
-        ctx.lineTo(0, yOffset);
+    let t = 0;
+    function animateLights() {
+      t += 0.015;
+      ctx.fillStyle = '#040406';
+      ctx.fillRect(0, 0, W, H);
 
-        for (let x = 0; x <= width; x += 40) {
-          const wave1 = Math.sin(x * 0.002 + step * (1 + i * 0.4) + i) * 60;
-          const wave2 = Math.cos(x * 0.0015 - step * 0.8 + i) * 40;
-          ctx.lineTo(x, yOffset + wave1 + wave2);
-        }
+      // Dibujar luces en movimiento
+      lights.forEach((l, i) => {
+        l.x += l.vx;
+        l.y += l.vy;
+        if (l.x < 0.05 || l.x > 0.95) l.vx *= -1;
+        if (l.y < 0.05 || l.y > 0.95) l.vy *= -1;
 
-        ctx.lineTo(width, height);
-        ctx.closePath();
+        const pulse = Math.sin(t + i * 1.5) * 0.04;
+        const alpha = Math.max(0.04, l.baseAlpha + pulse);
 
-        // Escala de grises pura
-        const shade = 10 + i * 5; // #0a0a0a a #191919
-        ctx.fillStyle = `rgba(${shade}, ${shade}, ${shade}, 0.65)`;
-        ctx.fill();
-      }
+        const cx = l.x * W;
+        const cy = l.y * H;
 
-      requestAnimationFrame(renderAmbient);
+        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, l.r);
+        // Luz en escala de grises con leve matiz frío
+        g.addColorStop(0, `rgba(180, 190, 215, ${alpha})`);
+        g.addColorStop(0.4, `rgba(90, 95, 115, ${alpha * 0.45})`);
+        g.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+      });
+
+      requestAnimationFrame(animateLights);
     }
-    renderAmbient();
+    animateLights();
 
-    // ── GESTIÓN DE ACCESO / HERRAMIENTA DIRECTA ──
+    // ── ACCESO OCULTO: 5 CLICS EN EL LOGO "NodCoT+" O TECLA DIRECTA ──
+    let clickCount = 0;
+    let clickTimer = null;
+    const trigger = document.getElementById('brand-trigger');
+
+    trigger.addEventListener('click', () => {
+      clickCount++;
+      clearTimeout(clickTimer);
+
+      clickTimer = setTimeout(() => {
+        clickCount = 0;
+      }, 1500);
+
+      if (clickCount >= 5) {
+        clickCount = 0;
+        openSecret();
+      }
+    });
+
+    // Atajo para ti: Ctrl + Shift + A
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        openSecret();
+      }
+    });
+
     const PASS = 'NodCoT+2026';
 
-    function openLogin() {
-      const modal = document.getElementById('login-modal');
+    function openSecret() {
+      const modal = document.getElementById('secret-modal');
       modal.style.display = 'flex';
-      const input = document.getElementById('admin-key');
+      const input = document.getElementById('secret-key');
       input.value = '';
       input.focus();
     }
 
-    function closeLogin() {
-      document.getElementById('login-modal').style.display = 'none';
+    function closeSecret() {
+      document.getElementById('secret-modal').style.display = 'none';
     }
 
-    function verifyAccess() {
-      const key = document.getElementById('admin-key').value;
+    function verifySecret() {
+      const key = document.getElementById('secret-key').value;
       if (key === PASS) {
-        closeLogin();
+        closeSecret();
         openStudio();
       } else {
-        alert('Clave incorrecta.');
-        document.getElementById('admin-key').value = '';
+        alert('Clave no válida.');
+        document.getElementById('secret-key').value = '';
       }
     }
 
@@ -746,22 +756,22 @@
     }
 
     function runFlow() {
-      logTerm('Iniciando ejecución del grafo...');
+      logTerm('Ejecutando grafo...');
       document.getElementById('flow-status').textContent = 'Procesando...';
 
       setTimeout(() => {
-        logTerm('[Harvester] Extracción K-Means completada: 4 colores indexados.');
+        logTerm('[Harvester] Paleta extraída por K-Means: 4 tonos indexados.');
       }, 300);
 
       setTimeout(() => {
-        logTerm('[AI Composer] Síntesis de estructura web finalizada.');
-      }, 700);
+        logTerm('[IA Layout] Estructura generada y validada.');
+      }, 650);
 
       setTimeout(() => {
         updateLiveFrame();
-        logTerm('[Live Sink] Documento emitido al visualizador en 18ms.');
-        document.getElementById('flow-status').textContent = 'Emitido a Live Browser.';
-      }, 1000);
+        logTerm('[Simulador] Resultado emitido al visualizador en vivo.');
+        document.getElementById('flow-status').textContent = 'Emitido con éxito.';
+      }, 950);
     }
 
     function updateLiveFrame() {
@@ -771,18 +781,18 @@
         <html>
         <head>
           <style>
-            body { margin:0; background:#0d0d0d; color:#e0e0e0; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; text-align:center; padding:20px; }
+            body { margin:0; background:#0c0d12; color:#f4f5f8; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; text-align:center; padding:20px; }
             h1 { font-size:1.8rem; margin-bottom:12px; color:#fff; }
-            p { color:#888; max-width:400px; font-size:0.9rem; line-height:1.6; }
-            .badge { font-size:0.7rem; font-family:monospace; background:#222; color:#aaa; padding:4px 8px; border-radius:4px; margin-bottom:16px; border:1px solid #333; }
-            .btn { background:#fff; color:#000; border:none; padding:10px 20px; font-weight:bold; border-radius:4px; margin-top:20px; cursor:pointer; }
+            p { color:#8b90a0; max-width:400px; font-size:0.9rem; line-height:1.6; }
+            .pill { font-size:0.7rem; font-family:monospace; background:#181b26; color:#a78bfa; padding:4px 10px; border-radius:999px; margin-bottom:16px; border:1px solid #282d3f; }
+            .btn { background:#fff; color:#000; border:none; padding:10px 22px; font-weight:bold; border-radius:6px; margin-top:20px; cursor:pointer; }
           </style>
         </head>
         <body>
-          <div class="badge">NodCoT+ Live Preview</div>
+          <div class="pill">● Simulador en Tiempo Real</div>
           <h1>${prompt}</h1>
-          <p>Renderizado en tiempo real por el motor de nodos de NodCoT+.</p>
-          <button class="btn">Interactuar</button>
+          <p>Sitio generado con la paleta de colores y componentes extraídos de tu flujo de nodos.</p>
+          <button class="btn">Explorar Sitio</button>
         </body>
         </html>
       `;
@@ -791,16 +801,9 @@
 
     function handleWaitlist(e) {
       e.preventDefault();
-      document.querySelector('.waitlist-box').style.display = 'none';
+      document.querySelector('.waitlist-form').style.display = 'none';
       document.getElementById('wl-msg').style.display = 'block';
     }
-
-    // Atajo directo para devs: Ctrl+Shift+A
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-        openLogin();
-      }
-    });
   </script>
 </body>
 </html>
