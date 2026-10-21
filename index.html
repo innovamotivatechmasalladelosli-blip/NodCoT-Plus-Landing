@@ -1,1130 +1,806 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NodCoT+ — La plataforma que lo cambia todo</title>
-<meta name="description" content="NodCoT+ es la plataforma de nodos de nueva generación. Visual para creadores, potente para desarrolladores."/>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#070a0f;
-  --bg2:#0c1018;
-  --surface:rgba(15,22,35,0.85);
-  --border:rgba(255,255,255,0.07);
-  --border-hover:rgba(99,179,237,0.35);
-  --accent:#4f9eff;
-  --accent2:#a78bfa;
-  --accent3:#34d399;
-  --text:#f0f4ff;
-  --text-secondary:#a0aec0;
-  --text-muted:#4a5568;
-}
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Inter',sans-serif;
-  min-height:100vh;
-  overflow-x:hidden;
-  line-height:1.6;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodCoT+ — Visual Node System & Polyglot Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ════════════════════════════
-   FONDO ANIMADO
-════════════════════════════ */
-#bg-canvas{
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-}
-.noise-overlay{
-  position:fixed;
-  inset:0;
-  z-index:1;
-  opacity:0.035;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size:200px;
-  pointer-events:none;
-  animation:noiseAnim 0.15s steps(1) infinite;
-}
-@keyframes noiseAnim{
-  0%{background-position:0 0}
-  10%{background-position:-5% -10%}
-  20%{background-position:-15% 5%}
-  30%{background-position:7% -25%}
-  40%{background-position:-5% 25%}
-  50%{background-position:-15% 10%}
-  60%{background-position:15% 0%}
-  70%{background-position:0 15%}
-  80%{background-position:3% 35%}
-  90%{background-position:-10% 10%}
-  100%{background-position:0 0}
-}
+    :root {
+      --bg: #050505;
+      --bg-elevated: #0d0d0d;
+      --surface: #141414;
+      --surface-border: #222222;
+      --border-light: #333333;
+      --text: #f2f2f2;
+      --text-muted: #888888;
+      --text-dim: #444444;
+      --accent: #ffffff;
+      --accent-gray: #a3a3a3;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Space Grotesk', -apple-system, sans-serif;
+    }
 
-/* ════════════════════════════
-   LAYOUT
-════════════════════════════ */
-.content{position:relative;z-index:2}
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
 
-/* ════════════════════════════
-   NAV
-════════════════════════════ */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 48px;
-  background:rgba(7,10,15,0.75);
-  backdrop-filter:blur(24px);
-  border-bottom:1px solid var(--border);
-}
-.logo{
-  font-size:1.6rem;font-weight:900;letter-spacing:-1px;
-  background:linear-gradient(130deg,#4f9eff,#a78bfa 50%,#34d399);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.nav-right{display:flex;align-items:center;gap:16px}
-.nav-badge{
-  font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  background:linear-gradient(130deg,var(--accent),var(--accent2));
-  color:#fff;padding:5px 14px;border-radius:999px;
-}
-.nav-admin-btn{
-  font-size:0.75rem;color:var(--text-muted);cursor:pointer;
-  background:none;border:1px solid var(--border);padding:5px 12px;
-  border-radius:8px;font-family:inherit;transition:all 0.2s;
-}
-.nav-admin-btn:hover{color:var(--text-secondary);border-color:rgba(255,255,255,0.15)}
+    /* ── FONDO NEGRO Y GRIS CON MOVIMIENTO ORGÁNICO Y RUIDO ── */
+    #ambient-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-/* ════════════════════════════
-   HERO
-════════════════════════════ */
-.hero{
-  min-height:100vh;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  text-align:center;padding:130px 24px 80px;
-}
-.hero-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font-size:0.78rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;
-  color:var(--accent);border:1px solid rgba(79,158,255,0.25);
-  background:rgba(79,158,255,0.07);padding:7px 18px;border-radius:999px;margin-bottom:32px;
-}
-.pulse{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(79,158,255,0.5)}50%{opacity:0.6;box-shadow:0 0 0 6px rgba(79,158,255,0)}}
+    .noise-filter {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
 
-h1{
-  font-size:clamp(3rem,7.5vw,6rem);
-  font-weight:900;letter-spacing:-3px;line-height:1.02;
-  margin-bottom:12px;
-}
-h1 .line1{color:var(--text)}
-h1 .line2{
-  background:linear-gradient(130deg,#4f9eff 0%,#a78bfa 45%,#34d399 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hero-sub{
-  font-size:clamp(1rem,2.2vw,1.2rem);
-  color:var(--text-secondary);
-  max-width:580px;line-height:1.85;margin:20px auto 48px;
-  font-weight:400;
-}
-.hero-sub strong{color:var(--text);font-weight:600}
+    .wrapper {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* ── WAITLIST ── */
-.wl-form{
-  display:flex;gap:10px;max-width:500px;width:100%;
-  margin:0 auto 14px;flex-wrap:wrap;justify-content:center;
-}
-.wl-form input{
-  flex:1;min-width:240px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid var(--border);color:var(--text);
-  padding:15px 22px;border-radius:14px;font-size:0.95rem;
-  font-family:inherit;outline:none;transition:border-color 0.2s,background 0.2s;
-}
-.wl-form input:focus{border-color:var(--accent);background:rgba(79,158,255,0.06)}
-.wl-form input::placeholder{color:var(--text-muted)}
-.btn{
-  background:linear-gradient(130deg,var(--accent),var(--accent2));
-  color:#fff;border:none;padding:15px 30px;border-radius:14px;
-  font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;
-  transition:opacity 0.2s,transform 0.2s,box-shadow 0.2s;
-  box-shadow:0 4px 24px rgba(79,158,255,0.25);white-space:nowrap;
-}
-.btn:hover{opacity:0.88;transform:translateY(-2px);box-shadow:0 8px 32px rgba(79,158,255,0.35)}
-.wl-note{font-size:0.78rem;color:var(--text-muted)}
-.wl-success{display:none;margin-top:16px;font-size:0.95rem;color:var(--accent3);font-weight:600}
+    /* ── HEADER MINIMALISTA ── */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 36px;
+      border-bottom: 1px solid var(--surface-border);
+      background: rgba(5,5,5,0.7);
+      backdrop-filter: blur(12px);
+    }
 
-/* ── TRUSTED BY ── */
-.trusted{margin-top:60px;font-size:0.75rem;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase}
-.avatars{display:flex;justify-content:center;margin-top:14px;gap:-8px}
-.avatar{
-  width:36px;height:36px;border-radius:50%;
-  border:2px solid var(--bg);
-  background:linear-gradient(130deg,#1e2d45,#2d3f60);
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.75rem;font-weight:700;color:var(--text-secondary);
-  margin-left:-8px;
-}
-.avatar-count{
-  width:36px;height:36px;border-radius:50%;
-  border:2px solid var(--bg);
-  background:rgba(79,158,255,0.15);
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.65rem;font-weight:700;color:var(--accent);
-  margin-left:-8px;
-}
+    .brand {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-/* ════════════════════════════
-   STATS
-════════════════════════════ */
-.stats-bar{
-  position:relative;z-index:2;
-  display:flex;justify-content:center;flex-wrap:wrap;gap:0;
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  background:rgba(12,16,24,0.6);backdrop-filter:blur(12px);
-}
-.stat{
-  text-align:center;padding:36px 48px;
-  border-right:1px solid var(--border);
-}
-.stat:last-child{border-right:none}
-.stat-num{
-  font-size:2.2rem;font-weight:900;letter-spacing:-1px;
-  background:linear-gradient(130deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.stat-label{font-size:0.82rem;color:var(--text-secondary);margin-top:6px;font-weight:500}
-.stat-sub{font-size:0.72rem;color:var(--text-muted);margin-top:2px}
+    .brand span {
+      background: #222;
+      color: #999;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #333;
+    }
 
-/* ════════════════════════════
-   SECCIONES
-════════════════════════════ */
-section.sec{
-  position:relative;z-index:2;
-  max-width:1140px;margin:0 auto;padding:100px 32px;
-}
-.sec-tag{
-  font-size:0.72rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
-  color:var(--accent);margin-bottom:16px;
-}
-.sec-title{
-  font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;
-  letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;
-}
-.sec-desc{
-  font-size:1.05rem;color:var(--text-secondary);
-  max-width:560px;line-height:1.8;margin-bottom:64px;
-}
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-/* ── FEATURES GRID ── */
-.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);border-radius:20px;
-  padding:36px;cursor:default;position:relative;overflow:hidden;
-  transition:border-color 0.3s,transform 0.35s,box-shadow 0.35s;
-}
-.card::after{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(600px circle at var(--mx,50%) var(--my,50%),rgba(79,158,255,0.05),transparent 70%);
-  opacity:0;transition:opacity 0.3s;pointer-events:none;border-radius:inherit;
-}
-.card:hover{border-color:var(--border-hover);transform:translateY(-5px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
-.card:hover::after{opacity:1}
-.card-icon{font-size:2.2rem;margin-bottom:20px;display:block}
-.card-name{font-size:1.15rem;font-weight:700;margin-bottom:10px;color:var(--text)}
-.card-desc{font-size:0.9rem;color:var(--text-secondary);line-height:1.75}
-.tag{
-  display:inline-block;margin-top:18px;
-  font-size:0.67rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  padding:4px 12px;border-radius:999px;border:1px solid;
-}
-.tag-blue{background:rgba(79,158,255,0.1);color:var(--accent);border-color:rgba(79,158,255,0.25)}
-.tag-purple{background:rgba(167,139,250,0.1);color:var(--accent2);border-color:rgba(167,139,250,0.25)}
-.tag-green{background:rgba(52,211,153,0.1);color:var(--accent3);border-color:rgba(52,211,153,0.25)}
-.tag-orange{background:rgba(251,146,60,0.1);color:#fb923c;border-color:rgba(251,146,60,0.25)}
-.tag-red{background:rgba(248,113,113,0.1);color:#f87171;border-color:rgba(248,113,113,0.25)}
+    .btn-admin {
+      background: transparent;
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 7px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-/* ── ICOD PREVIEW ── */
-.icod-wrapper{
-  position:relative;z-index:2;
-  background:rgba(10,14,20,0.7);
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  backdrop-filter:blur(16px);
-}
-.icod-inner{
-  max-width:1140px;margin:0 auto;
-  display:grid;grid-template-columns:1fr 1fr;gap:64px;
-  align-items:center;padding:100px 32px;
-}
-@media(max-width:800px){.icod-inner{grid-template-columns:1fr}}
+    .btn-admin:hover {
+      color: var(--text);
+      border-color: #666;
+      background: #111;
+    }
 
-.code-window{
-  background:#060a0f;border:1px solid rgba(255,255,255,0.08);
-  border-radius:18px;overflow:hidden;
-  box-shadow:0 32px 80px rgba(0,0,0,0.5);
-}
-.code-top{
-  display:flex;align-items:center;gap:8px;
-  padding:14px 20px;background:#090d14;
-  border-bottom:1px solid rgba(255,255,255,0.06);
-}
-.dot{width:13px;height:13px;border-radius:50%}
-.dr{background:#ff5f57}.dy{background:#ffbd2e}.dg{background:#28c840}
-.code-file{font-size:0.75rem;color:var(--text-muted);margin-left:10px;font-family:'JetBrains Mono',monospace}
-.code-body{
-  padding:30px;font-family:'JetBrains Mono',monospace;
-  font-size:0.82rem;line-height:2;color:#64748b;
-}
-.kw{color:#818cf8}.fn{color:#38bdf8}.str{color:#4ade80}
-.cm{color:#334155}.op{color:#f472b6}.num{color:#fb923c}
-.ty{color:#fbbf24}
+    /* ── HERO BRUTALISTA / TÉCNICO ── */
+    .hero {
+      max-width: 980px;
+      margin: 80px auto 40px;
+      padding: 0 24px;
+      text-align: left;
+    }
 
-/* ── ROADMAP ── */
-.roadmap{display:flex;flex-direction:column;gap:0}
-.rm-item{
-  display:flex;gap:24px;padding:28px 0;
-  border-bottom:1px solid var(--border);
-}
-.rm-item:last-child{border-bottom:none}
-.rm-num{
-  min-width:44px;height:44px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.85rem;font-weight:800;flex-shrink:0;
-  background:rgba(79,158,255,0.08);border:1px solid rgba(79,158,255,0.2);
-  color:var(--accent);
-}
-.rm-num.done{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.25);color:var(--accent3)}
-.rm-content{}
-.rm-phase{font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px}
-.rm-title{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px}
-.rm-desc{font-size:0.87rem;color:var(--text-secondary);line-height:1.7}
+    .tag-line {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-/* ── CTA FINAL ── */
-.cta-section{
-  position:relative;z-index:2;text-align:center;padding:120px 32px;
-}
-.cta-card{
-  max-width:720px;margin:0 auto;
-  background:linear-gradient(135deg,rgba(79,158,255,0.06),rgba(167,139,250,0.06));
-  border:1px solid rgba(79,158,255,0.15);border-radius:32px;
-  padding:72px 48px;
-}
+    .tag-line::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #888;
+      border-radius: 50%;
+    }
 
-/* ── FOOTER ── */
-footer{
-  position:relative;z-index:2;text-align:center;
-  padding:40px 32px;border-top:1px solid var(--border);
-}
-footer p{font-size:0.82rem;color:var(--text-muted);line-height:2}
-footer a{color:var(--accent);text-decoration:none}
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4.8rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      color: #ffffff;
+      margin-bottom: 24px;
+    }
 
-/* ════════════════════════════
-   PANEL DE ADMIN
-════════════════════════════ */
-#admin-overlay{
-  display:none;position:fixed;inset:0;z-index:9999;
-  background:rgba(4,6,10,0.97);backdrop-filter:blur(24px);
-  overflow-y:auto;
-}
-#admin-login{
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;min-height:100vh;padding:40px 24px;text-align:center;
-}
-.admin-logo{
-  font-size:1.4rem;font-weight:900;letter-spacing:-0.5px;
-  background:linear-gradient(130deg,#4f9eff,#a78bfa);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  margin-bottom:8px;
-}
-.admin-sub{font-size:0.85rem;color:var(--text-muted);margin-bottom:40px}
-.admin-input{
-  width:100%;max-width:320px;
-  background:rgba(255,255,255,0.04);border:1px solid var(--border);
-  color:var(--text);padding:14px 20px;border-radius:12px;
-  font-size:0.95rem;font-family:inherit;outline:none;margin-bottom:12px;
-  transition:border-color 0.2s;text-align:center;letter-spacing:4px;
-}
-.admin-input:focus{border-color:var(--accent)}
-.admin-input::placeholder{letter-spacing:0;color:var(--text-muted)}
-.admin-err{font-size:0.82rem;color:#f87171;margin-top:8px;display:none}
+    h1 em {
+      font-style: normal;
+      color: #777;
+    }
 
-/* ── PANEL INTERIOR ── */
-#admin-panel{display:none;max-width:1000px;margin:0 auto;padding:60px 32px}
-.panel-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:48px;flex-wrap:wrap;gap:16px;
-}
-.panel-title{font-size:1.8rem;font-weight:800;letter-spacing:-1px}
-.close-btn{
-  background:rgba(255,255,255,0.05);border:1px solid var(--border);
-  color:var(--text-secondary);padding:10px 20px;border-radius:10px;
-  font-family:inherit;font-size:0.85rem;cursor:pointer;transition:all 0.2s;
-}
-.close-btn:hover{background:rgba(255,255,255,0.08);color:var(--text)}
+    .lead {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 640px;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
 
-.panel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:40px}
-.metric{
-  background:rgba(255,255,255,0.03);border:1px solid var(--border);
-  border-radius:16px;padding:24px;
-}
-.metric-val{font-size:2rem;font-weight:900;letter-spacing:-1px}
-.metric-val.blue{background:linear-gradient(130deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.metric-val.green{color:var(--accent3)}
-.metric-val.purple{color:var(--accent2)}
-.metric-label{font-size:0.8rem;color:var(--text-muted);margin-top:6px}
+    .waitlist-box {
+      display: flex;
+      gap: 8px;
+      max-width: 460px;
+      background: var(--bg-elevated);
+      padding: 6px;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+    }
 
-.panel-section-title{
-  font-size:0.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:var(--text-muted);margin-bottom:16px;
-}
+    .waitlist-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      outline: none;
+    }
 
-/* ── WAITLIST TABLE ── */
-.wl-table{
-  background:rgba(255,255,255,0.02);border:1px solid var(--border);
-  border-radius:16px;overflow:hidden;width:100%;margin-bottom:32px;
-}
-.wl-table th{
-  text-align:left;padding:14px 20px;font-size:0.75rem;font-weight:700;
-  letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);
-  border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);
-}
-.wl-table td{
-  padding:14px 20px;font-size:0.88rem;color:var(--text-secondary);
-  border-bottom:1px solid rgba(255,255,255,0.04);
-}
-.wl-table tr:last-child td{border-bottom:none}
-.status-badge{
-  font-size:0.68rem;font-weight:700;letter-spacing:0.5px;
-  padding:3px 10px;border-radius:999px;
-}
-.s-waiting{background:rgba(251,146,60,0.15);color:#fb923c}
-.s-beta{background:rgba(52,211,153,0.15);color:var(--accent3)}
-.s-blocked{background:rgba(248,113,113,0.15);color:#f87171}
+    .waitlist-box input::placeholder {
+      color: var(--text-dim);
+    }
 
-/* ── BETA INVITE ── */
-.invite-form{
-  display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;
-}
-.inv-input{
-  flex:1;min-width:220px;
-  background:rgba(255,255,255,0.04);border:1px solid var(--border);
-  color:var(--text);padding:12px 18px;border-radius:12px;
-  font-size:0.9rem;font-family:inherit;outline:none;
-}
-.inv-input:focus{border-color:var(--accent)}
-.inv-input::placeholder{color:var(--text-muted)}
-.btn-sm{
-  background:linear-gradient(130deg,var(--accent),var(--accent2));
-  color:#fff;border:none;padding:12px 22px;border-radius:12px;
-  font-size:0.88rem;font-weight:700;cursor:pointer;font-family:inherit;
-}
-.btn-sm.green{background:linear-gradient(130deg,#10b981,#34d399)}
-.btn-sm.red{background:linear-gradient(130deg,#ef4444,#f87171)}
+    .btn-submit {
+      background: #f2f2f2;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
 
-/* ── CHANGES LOG ── */
-.changes-list{
-  background:rgba(255,255,255,0.02);border:1px solid var(--border);
-  border-radius:16px;overflow:hidden;margin-bottom:32px;
-}
-.change-item{
-  padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.04);
-  display:flex;align-items:flex-start;gap:14px;
-}
-.change-item:last-child{border-bottom:none}
-.change-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
-.cd-blue{background:var(--accent)}.cd-green{background:var(--accent3)}.cd-purple{background:var(--accent2)}
-.change-text{font-size:0.88rem;color:var(--text-secondary);line-height:1.6}
-.change-date{font-size:0.72rem;color:var(--text-muted);margin-top:4px}
-.change-new-form{
-  display:flex;gap:10px;flex-wrap:wrap;padding:20px;
-  border-top:1px solid var(--border);
-  background:rgba(255,255,255,0.01);
-}
+    .btn-submit:hover {
+      opacity: 0.85;
+    }
 
-/* ── DIVIDER ── */
-.divider{height:1px;background:var(--border);margin:32px 0}
+    /* ── ESPECIFICACIONES / GRID TÉCNICO ── */
+    .specs {
+      max-width: 980px;
+      margin: 80px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
 
-/* SCROLL ANIMATIONS */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
-.reveal.in{opacity:1;transform:translateY(0)}
+    .spec-card {
+      background: rgba(18,18,18,0.7);
+      border: 1px solid var(--surface-border);
+      border-radius: 6px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
 
-@media(max-width:700px){
-  nav{padding:16px 20px}
-  h1{letter-spacing:-2px}
-  .stat{padding:24px 28px}
-  .icod-inner{padding:60px 20px}
-  .cta-card{padding:48px 24px}
-  section.sec{padding:72px 20px}
-}
-</style>
+    .spec-card:hover {
+      border-color: #444;
+    }
+
+    .spec-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .spec-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .spec-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── MODAL LOGIN ADMIN ── */
+    #login-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-dialog {
+      background: #0f0f0f;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 360px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .login-dialog h3 {
+      font-family: var(--mono);
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .login-dialog p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .login-input {
+      width: 100%;
+      background: #181818;
+      border: 1px solid #333;
+      padding: 12px;
+      border-radius: 4px;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .login-input:focus {
+      border-color: #666;
+    }
+
+    /* ── HERRAMIENTA / STUDIO COMPLETO (PANTALLA DE ADMIN) ── */
+    #studio-app {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: #070707;
+      flex-direction: column;
+    }
+
+    .studio-bar {
+      height: 48px;
+      background: #0e0e0e;
+      border-bottom: 1px solid #1f1f1f;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+    }
+
+    .studio-tools {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .s-btn {
+      background: #1a1a1a;
+      border: 1px solid #2e2e2e;
+      color: #ccc;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .s-btn:hover {
+      background: #252525;
+      color: #fff;
+    }
+
+    .s-btn-primary {
+      background: #fff;
+      color: #000;
+      font-weight: 700;
+      border: 1px solid #fff;
+    }
+
+    .s-btn-primary:hover {
+      background: #e0e0e0;
+    }
+
+    .studio-body {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Canvas de Nodos */
+    .studio-canvas {
+      flex: 1;
+      position: relative;
+      background-size: 24px 24px;
+      background-image: radial-gradient(circle, #222 1px, transparent 1px);
+      overflow: auto;
+    }
+
+    /* Nodo */
+    .c-node {
+      position: absolute;
+      width: 290px;
+      background: #111111;
+      border: 1px solid #282828;
+      border-radius: 6px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.8);
+      overflow: hidden;
+    }
+
+    .c-node-head {
+      padding: 10px 14px;
+      background: #181818;
+      border-bottom: 1px solid #242424;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .c-node-body {
+      padding: 14px;
+    }
+
+    .c-input-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: #888;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .c-field {
+      width: 100%;
+      background: #090909;
+      border: 1px solid #2b2b2b;
+      padding: 8px 10px;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    .palette-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .color-block {
+      flex: 1;
+      height: 22px;
+      border-radius: 3px;
+      border: 1px solid #333;
+    }
+
+    /* Live Preview Panel */
+    .studio-preview {
+      width: 440px;
+      border-left: 1px solid #222;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-header {
+      height: 36px;
+      background: #141414;
+      border-bottom: 1px solid #222;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: #888;
+    }
+
+    .preview-frame {
+      flex: 1;
+      border: none;
+      width: 100%;
+      background: #fff;
+    }
+
+    /* Terminal Inferior */
+    .studio-term {
+      height: 160px;
+      border-top: 1px solid #222;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+    }
+
+    .term-title {
+      padding: 4px 12px;
+      background: #121212;
+      color: #666;
+      font-size: 0.7rem;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .term-log {
+      flex: 1;
+      padding: 10px 14px;
+      overflow-y: auto;
+      color: #aaa;
+    }
+
+    .term-log div { margin-bottom: 4px; }
+  </style>
 </head>
 <body>
 
-<!-- FONDO ANIMADO (Canvas) -->
-<canvas id="bg-canvas"></canvas>
-<div class="noise-overlay"></div>
+  <!-- FONDO ANIMADO NEGRO Y GRIS (ONDAS DE HUMO Y MOVIMIENTO ORGÁNICO) -->
+  <canvas id="ambient-canvas"></canvas>
+  <div class="noise-filter"></div>
 
-<!-- CONTENIDO PRINCIPAL -->
-<div class="content">
+  <!-- VISTA PÚBLICA / LANDING -->
+  <div class="wrapper" id="public-view">
+    <header>
+      <div class="brand">
+        NodCoT+ <span>DEV-PREVIEW</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn-admin" onclick="openLogin()">[ Entrar al Studio / Admin ]</button>
+      </div>
+    </header>
 
-<!-- ── NAV ── -->
-<nav>
-  <div class="logo">NodCoT+</div>
-  <div class="nav-right">
-    <span class="nav-badge">Próximamente</span>
-    <button class="nav-admin-btn" onclick="openAdmin()">⚙ Admin</button>
-  </div>
-</nav>
-
-<!-- ── HERO ── -->
-<section class="hero">
-  <div class="hero-eyebrow"><span class="pulse"></span>En desarrollo activo — 2026</div>
-
-  <h1>
-    <div class="line1">Construye cualquier cosa.</div>
-    <div class="line2">Sin límites. Sin código.</div>
-  </h1>
-
-  <p class="hero-sub">
-    <strong>NodCoT+</strong> es la plataforma de nodos de nueva generación donde
-    creadores y desarrolladores conviven en el mismo ecosistema.<br/>
-    Canvas visual intuitivo, lenguaje propio <strong>ICod</strong>, IA integrada,
-    simulador en tiempo real y una comunidad que crece contigo.
-  </p>
-
-  <form class="wl-form" onsubmit="joinWaitlist(event)">
-    <input type="email" id="wl-email" placeholder="Ingresa tu correo electrónico" required/>
-    <button type="submit" class="btn">Quiero acceso anticipado →</button>
-  </form>
-  <p class="wl-note">Gratis, sin spam. Sé el primero en probar NodCoT+.</p>
-  <p class="wl-success" id="wl-ok">🎉 ¡Ya estás en la lista! Te avisamos pronto.</p>
-
-  <div class="trusted" style="margin-top:48px">
-    <p>Primeros en unirse a la lista de espera</p>
-    <div class="avatars" style="margin-top:12px">
-      <div class="avatar">A</div>
-      <div class="avatar">M</div>
-      <div class="avatar">K</div>
-      <div class="avatar">R</div>
-      <div class="avatar-count">+∞</div>
-    </div>
-  </div>
-</section>
-
-<!-- ── STATS ── -->
-<div class="stats-bar">
-  <div class="stat">
-    <div class="stat-num">200+</div>
-    <div class="stat-label">Nodos planificados</div>
-    <div class="stat-sub">Desde HTTP hasta algoritmos de color</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">1</div>
-    <div class="stat-label">Lenguaje propio: ICod</div>
-    <div class="stat-sub">Bit-compressed, políglota, ultrarrápido</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">0</div>
-    <div class="stat-label">Líneas de código para empezar</div>
-    <div class="stat-sub">Solo arrastra, conecta y publica</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">∞</div>
-    <div class="stat-label">Posibilidades</div>
-    <div class="stat-sub">Web, apps, IA, automatización y más</div>
-  </div>
-</div>
-
-<!-- ── PARA QUIÉN ── -->
-<section class="sec reveal">
-  <div class="sec-tag">¿Para quién es NodCoT+?</div>
-  <h2 class="sec-title">Una plataforma, dos mundos,<br/>un mismo lugar.</h2>
-  <p class="sec-desc">Ya seas diseñador, emprendedor, programador o simplemente alguien con una idea — NodCoT+ tiene el modo perfecto para ti.</p>
-
-  <div class="grid-3">
-    <div class="card reveal">
-      <span class="card-icon">🎨</span>
-      <div class="card-name">Para creadores y emprendedores</div>
-      <p class="card-desc">Sin saber programar, construye sitios web, tiendas, automatizaciones y más usando bloques visuales con lenguaje cotidiano. Si funciona, con un clic lo conviertes en tu propio nodo reutilizable.</p>
-      <span class="tag tag-blue">No-Code</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">💻</span>
-      <div class="card-name">Para desarrolladores</div>
-      <p class="card-desc">Abre cualquier nodo y ve el código exacto detrás. Escribe en ICod, TypeScript, Python o Rust. Publica tus nodos en el marketplace y monetiza lo que construyes.</p>
-      <span class="tag tag-purple">Pro-Code</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">🤝</span>
-      <div class="card-name">Para equipos mixtos</div>
-      <p class="card-desc">El diseñador conecta nodos visualmente mientras el dev profundiza en el código. Todos ven el mismo resultado en tiempo real en el navegador integrado.</p>
-      <span class="tag tag-green">Colaborativo</span>
-    </div>
-  </div>
-</section>
-
-<!-- ── FEATURES PRINCIPALES ── -->
-<section class="sec reveal">
-  <div class="sec-tag">Características principales</div>
-  <h2 class="sec-title">Todo lo que necesitas.<br/>En un solo sistema.</h2>
-  <p class="sec-desc">NodCoT+ no es solo un editor de flujos. Es un ecosistema completo de creación, automatización e inteligencia.</p>
-
-  <div class="grid-3">
-    <div class="card reveal">
-      <span class="card-icon">🖥️</span>
-      <div class="card-name">Canvas Visual Infinito</div>
-      <p class="card-desc">Arrastra y conecta nodos en un lienzo infinito. Zoom, mini-mapa, grupos, etiquetas, colores y búsqueda rápida. Trabaja igual que en n8n pero mucho más rápido y potente.</p>
-      <span class="tag tag-blue">Core</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">⚡</span>
-      <div class="card-name">Lenguaje ICod</div>
-      <p class="card-desc">El primer lenguaje puente bit-comprimido. Une JavaScript, Python, Rust y más en una sintaxis limpia. El motor lo convierte en interfaz visual automáticamente para que cualquiera lo use.</p>
-      <span class="tag tag-purple">Innovación</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">🌐</span>
-      <div class="card-name">Navegador / Simulador en Vivo</div>
-      <p class="card-desc">Panel dividido: construyes a la izquierda y ves el resultado en la derecha en tiempo real. Soporte para sitios web, documentos PDF, simulación de flujos de datos y más.</p>
-      <span class="tag tag-green">Tiempo Real</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">🤖</span>
-      <div class="card-name">IA como Nodos Nativos</div>
-      <p class="card-desc">Conecta Gemini, GPT-4, Claude, Ollama y más directamente en tu flujo. La IA no es un add-on — es ciudadana de primera clase dentro del canvas desde el día uno.</p>
-      <span class="tag tag-purple">IA Nativa</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">🎨</span>
-      <div class="card-name">Extractor de Colores & Estilos</div>
-      <p class="card-desc">Pega la URL de cualquier sitio o sube una imagen/PDF y el algoritmo K-Means extrae la paleta, tipografías y tokens de diseño. Aplícalos a tu proyecto con un solo clic.</p>
-      <span class="tag tag-orange">Algoritmo IA</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">🔧</span>
-      <div class="card-name">Terminal Embebida</div>
-      <p class="card-desc">Una terminal poderosa que vive dentro del studio. Para los devs: acceso completo a CLI, git, paquetes y scripts. Para todos: asistentes guiados para configurar dominios, SSL y más.</p>
-      <span class="tag tag-blue">Dev Tools</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">🏪</span>
-      <div class="card-name">Marketplace Comunitario</div>
-      <p class="card-desc">Los devs crean y publican nodos (gratis o de pago). Los creadores los instalan con 1 clic. Guías interactivas ejecutables para configurar dominios, pagos, webhooks y más.</p>
-      <span class="tag tag-green">Comunidad</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">🧩</span>
-      <div class="card-name">Nodos Compuestos</div>
-      <p class="card-desc">Selecciona varios nodos que ya funcionan juntos, haz clic derecho → "Empaquetar como Nodo". Sin código, creas tu propia herramienta reutilizable y la publicas.</p>
-      <span class="tag tag-blue">No-Code Avanzado</span>
-    </div>
-    <div class="card reveal">
-      <span class="card-icon">🔒</span>
-      <div class="card-name">Seguridad & Privacidad</div>
-      <p class="card-desc">Ejecución en sandbox aislado. Control granular de permisos por nodo. Secretos encriptados. Historial de auditoría completo. Tus datos son tuyos.</p>
-      <span class="tag tag-red">Seguridad</span>
-    </div>
-  </div>
-</section>
-
-<!-- ── ICOD ── -->
-<div class="icod-wrapper reveal">
-  <div class="icod-inner">
-    <div>
-      <div class="sec-tag">El Lenguaje ICod</div>
-      <h2 class="sec-title" style="margin-bottom:16px">Código que habla todos los idiomas a la vez.</h2>
-      <p style="color:var(--text-secondary);line-height:1.85;margin-bottom:20px;font-size:1rem">
-        ICod es el pegamento ultrarrápido entre lenguajes. Mezcla Python para IA y data science, JavaScript para lógica web y Rust para velocidad crítica — todo en un solo flujo y sin fricción.
+    <main class="hero">
+      <div class="tag-line">Motor de Nodos Visual & Lenguaje ICod</div>
+      <h1>
+        Construcción visual.<br/>
+        <em>Rendimiento nativo en bits.</em>
+      </h1>
+      <p class="lead">
+        La plataforma de flujos de trabajo que unifica interfaces No-Code para creadores
+        con ejecución de código políglota para ingenieros.
       </p>
-      <p style="color:var(--text-secondary);line-height:1.85;font-size:1rem">
-        Lo mejor: cuando un desarrollador escribe un nodo en ICod con anotaciones simples, NodCoT+ <strong style="color:var(--text)">autogenera el formulario visual</strong> para que cualquier persona sin conocimientos técnicos pueda usarlo inmediatamente.
-      </p>
-    </div>
-    <div class="code-window">
-      <div class="code-top">
-        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-        <span class="code-file">harvest_and_build.icod</span>
+
+      <form class="waitlist-box" onsubmit="handleWaitlist(event)">
+        <input type="email" placeholder="Introduce tu correo para acceso anticipado..." required />
+        <button type="submit" class="btn-submit">Registrarme</button>
+      </form>
+      <div id="wl-msg" style="display:none; margin-top:12px; font-family:var(--mono); font-size:0.75rem; color:#888;">
+        ✓ Correo registrado en la lista de espera.
       </div>
-      <div class="code-body"><span class="cm">// ICod — extrae colores y construye un sitio</span>
+    </main>
 
-<span class="kw">flow</span> <span class="fn">buildSiteFromBrand</span>(<span class="ty">url</span>: <span class="str">String</span>) {
-
-  <span class="cm">// Extrae paleta con K-Means en espacio LAB</span>
-  <span class="kw">let</span> palette <span class="op">=</span> <span class="fn">@harvest</span>(url)
-    <span class="op">|></span> <span class="fn">kmeans</span>({ clusters: <span class="num">6</span>, space: <span class="str">"LAB"</span> })
-    <span class="op">|></span> <span class="fn">wcagFilter</span>(<span class="str">"AA"</span>)
-    <span class="op">|></span> <span class="fn">toDesignTokens</span>()
-
-  <span class="cm">// Genera sitio con IA usando los tokens</span>
-  <span class="kw">let</span> site <span class="op">=</span> <span class="fn">@ai.generate</span>({
-    model:  <span class="str">"gemini"</span>,
-    tokens: palette,
-    prompt: <span class="str">"landing moderna y rápida"</span>
-  })
-
-  <span class="cm">// Emite al Live Browser en tiempo real</span>
-  <span class="kw">emit</span> <span class="fn">@preview</span>(site)
-  <span class="kw">emit</span> <span class="fn">@deploy</span>(site, target: <span class="str">"web"</span>)
-}</div>
-    </div>
+    <section class="specs">
+      <div class="spec-card">
+        <div class="spec-label">Arquitectura 01</div>
+        <div class="spec-title">Lenguaje ICod</div>
+        <div class="spec-desc">Bytecode empaquetado a 32 bits por instrucción. Conexión de bajo coste entre JavaScript, Python y entornos nativos.</div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-label">Arquitectura 02</div>
+        <div class="spec-title">Simulador en Vivo</div>
+        <div class="spec-desc">Visualizador integrado en split-screen que renderiza en tiempo real los resultados generados por el flujo de nodos.</div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-label">Arquitectura 03</div>
+        <div class="spec-title">Extracción de Estilos</div>
+        <div class="spec-desc">Algoritmo K-Means integrado que procesa documentos y URLs para derivar tokens de diseño y paletas accesibles.</div>
+      </div>
+    </section>
   </div>
-</div>
 
-<!-- ── ROADMAP ── -->
-<section class="sec reveal">
-  <div class="sec-tag">Hoja de Ruta</div>
-  <h2 class="sec-title">¿Cómo llegamos ahí?</h2>
-  <p class="sec-desc">Cada fase trae algo nuevo y usable. Construimos en público y la comunidad da forma al producto.</p>
-
-  <div class="roadmap">
-    <div class="rm-item reveal">
-      <div class="rm-num done">✓</div>
-      <div class="rm-content">
-        <div class="rm-phase">Fase 0 · Completada</div>
-        <div class="rm-title">Repositorio & Landing Page</div>
-        <div class="rm-desc">Repositorio privado configurado en GitHub. Landing page pública activa con lista de espera y panel de administración.</div>
-      </div>
-    </div>
-    <div class="rm-item reveal">
-      <div class="rm-num">1</div>
-      <div class="rm-content">
-        <div class="rm-phase">Fase 1 · En progreso</div>
-        <div class="rm-title">Canvas Reactivo & Motor de Grafos</div>
-        <div class="rm-desc">Canvas infinito con React + TypeScript. Motor de ejecución DAG reactivo. Modo Fácil (formularios visuales) y Modo Dev (código) en el mismo nodo.</div>
-      </div>
-    </div>
-    <div class="rm-item reveal">
-      <div class="rm-num">2</div>
-      <div class="rm-content">
-        <div class="rm-phase">Fase 2</div>
-        <div class="rm-title">Lenguaje ICod v0.1 & Auto-UI</div>
-        <div class="rm-desc">Tokenizador, parser y bytecode comprimido. Bridge de ejecución JS/Python. Sistema de anotaciones que autogenera interfaces visuales.</div>
-      </div>
-    </div>
-    <div class="rm-item reveal">
-      <div class="rm-num">3</div>
-      <div class="rm-content">
-        <div class="rm-phase">Fase 3</div>
-        <div class="rm-title">Nodos Inteligentes & IA</div>
-        <div class="rm-desc">Extractor de colores (K-Means + WCAG). Conectores nativos para Gemini, GPT y Ollama. Nodos de automatización web y documentos.</div>
-      </div>
-    </div>
-    <div class="rm-item reveal">
-      <div class="rm-num">4</div>
-      <div class="rm-content">
-        <div class="rm-phase">Fase 4</div>
-        <div class="rm-title">Live Browser & Terminal</div>
-        <div class="rm-desc">Preview en tiempo real vía WebSockets. Terminal embebida con soporte PTY. Inspección de estado nodo por nodo.</div>
-      </div>
-    </div>
-    <div class="rm-item reveal">
-      <div class="rm-num">5</div>
-      <div class="rm-content">
-        <div class="rm-phase">Fase 5</div>
-        <div class="rm-title">Beta Pública & Marketplace</div>
-        <div class="rm-desc">Acceso a los primeros beta testers de la lista de espera. Lanzamiento del marketplace con nodos gratuitos y de pago. Sistema de paquetes .nco.</div>
+  <!-- MODAL DE ACCESO AL STUDIO -->
+  <div id="login-modal">
+    <div class="login-dialog">
+      <h3>Acceso a la Herramienta</h3>
+      <p>Introduce la clave para abrir el Studio de NodCoT+ directamente.</p>
+      <input type="password" id="admin-key" class="login-input" placeholder="Clave de acceso" onkeydown="if(event.key==='Enter')verifyAccess()"/>
+      <button class="btn-submit" style="width:100%;" onclick="verifyAccess()">Abrir Herramienta</button>
+      <div style="margin-top:16px;">
+        <a href="javascript:void(0)" onclick="closeLogin()" style="color:#666; font-family:var(--mono); font-size:0.7rem; text-decoration:none;">← Volver</a>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ── CTA ── -->
-<section class="cta-section">
-  <div class="cta-card reveal">
-    <div class="hero-eyebrow" style="justify-content:center"><span class="pulse"></span>Lista de espera abierta</div>
-    <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;letter-spacing:-1px;margin-bottom:16px">
-      ¿Listo para construir<br/>el futuro?
-    </h2>
-    <p style="color:var(--text-secondary);margin-bottom:40px;line-height:1.8;font-size:1rem">
-      Únete ahora y obtén acceso anticipado a NodCoT+.<br/>
-      Los primeros en la lista tienen voz en cómo se construye.
-    </p>
-    <form class="wl-form" style="margin:0 auto" onsubmit="joinWaitlist(event)">
-      <input type="email" placeholder="tu@correo.com" required/>
-      <button type="submit" class="btn">Unirme ahora →</button>
-    </form>
+  <!-- HERRAMIENTA / STUDIO ACTIVO -->
+  <div id="studio-app">
+    <div class="studio-bar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <strong>NodCoT+ Studio</strong>
+        <span style="color:#666;">| Entorno de Desarrollo Activo</span>
+      </div>
+      <div class="studio-tools">
+        <button class="s-btn s-btn-primary" onclick="runFlow()">▶ Ejecutar Flujo</button>
+        <button class="s-btn" onclick="togglePreview()">Visualizador</button>
+        <button class="s-btn" onclick="closeStudio()">Salir del Studio</button>
+      </div>
+    </div>
+
+    <div class="studio-body">
+      <!-- CANVAS DE NODOS -->
+      <div class="studio-canvas">
+        
+        <!-- NODO 1: HARVESTER -->
+        <div class="c-node" style="left: 40px; top: 40px;">
+          <div class="c-node-head">
+            <span>Color & Style Harvester</span>
+            <span style="color:#888;">[K-Means]</span>
+          </div>
+          <div class="c-node-body">
+            <span class="c-input-label">URL o Documento Fuente</span>
+            <input type="text" class="c-field" id="src-url" value="https://brand-example.io" />
+            
+            <span class="c-input-label">Paleta Generada (LAB Space)</span>
+            <div class="palette-row">
+              <div class="color-block" style="background:#f2f2f2;"></div>
+              <div class="color-block" style="background:#777777;"></div>
+              <div class="color-block" style="background:#3b82f6;"></div>
+              <div class="color-block" style="background:#111111;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NODO 2: AI SYNTH -->
+        <div class="c-node" style="left: 370px; top: 40px;">
+          <div class="c-node-head">
+            <span>IA Layout Composer</span>
+            <span style="color:#888;">[Gemini]</span>
+          </div>
+          <div class="c-node-body">
+            <span class="c-input-label">Instrucción / Estructura</span>
+            <input type="text" class="c-field" id="ai-prompt" value="Landing minimalista de arquitectura y diseño" />
+            <span class="c-input-label">Modo de Generación</span>
+            <input type="text" class="c-field" value="Componentes React / HTML5" readonly style="color:#666;" />
+          </div>
+        </div>
+
+        <!-- NODO 3: LIVE BROWSER SINK -->
+        <div class="c-node" style="left: 700px; top: 40px;">
+          <div class="c-node-head">
+            <span>Live Preview Target</span>
+            <span style="color:#22c55e;">[Sincronizado]</span>
+          </div>
+          <div class="c-node-body">
+            <span class="c-input-label">Destino de Salida</span>
+            <input type="text" class="c-field" value="Split-Screen Sandbox" readonly />
+            <span class="c-input-label">Estado del Flujo</span>
+            <div style="font-family:var(--mono); font-size:0.75rem; color:#888;" id="flow-status">Listo para emitir.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SPLIT VIEW / NAVEGADOR EN VIVO -->
+      <div class="studio-preview" id="preview-panel">
+        <div class="preview-header">
+          <span>live://sandbox:preview</span>
+          <span>HTML / CSS Activo</span>
+        </div>
+        <iframe class="preview-frame" id="sim-frame"></iframe>
+      </div>
+    </div>
+
+    <!-- TERMINAL INFERIOR -->
+    <div class="studio-term">
+      <div class="term-title">NodCoT+ Terminal / Runtime Logger</div>
+      <div class="term-log" id="term-log">
+        <div>[ICod Runtime] Motor de 32 bits iniciado correctamente.</div>
+        <div>[Workspace] 3 nodos cargados en el canvas.</div>
+      </div>
+    </div>
   </div>
-</section>
 
-<!-- ── FOOTER ── -->
-<footer>
-  <p><strong style="color:var(--text)">NodCoT+</strong> — Desarrollado con 🔥 por <strong style="color:var(--text)">ArkanaWords</strong></p>
-  <p style="margin-top:8px">© 2026 ArkanaWords. Todos los derechos reservados. ·
-    <a href="mailto:innovamotivatechmasalladelosli@gmail.com">Contacto</a>
-  </p>
-</footer>
+  <script>
+    // ── ANIMACIÓN DE FONDO: ONDAS DE HUMO Y MOVIMIENTO NEGRO/GRIS ──
+    const canvas = document.getElementById('ambient-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
 
-</div><!-- /content -->
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
 
+    let step = 0;
+    function renderAmbient() {
+      step += 0.003;
+      ctx.fillStyle = '#050505';
+      ctx.fillRect(0, 0, width, height);
 
-<!-- ════════════════════════════
-     PANEL DE ADMIN
-════════════════════════════ -->
-<div id="admin-overlay">
-
-  <!-- LOGIN -->
-  <div id="admin-login">
-    <div class="admin-logo">NodCoT+ Admin</div>
-    <p class="admin-sub">Panel de administración y beta testers</p>
-    <input class="admin-input" type="password" id="admin-pass" placeholder="Contraseña de acceso" onkeydown="if(event.key==='Enter')checkAdmin()"/>
-    <br/>
-    <button class="btn" style="margin-top:4px" onclick="checkAdmin()">Entrar</button>
-    <p class="admin-err" id="admin-err">Contraseña incorrecta.</p>
-    <p style="margin-top:24px;font-size:0.78rem;color:var(--text-muted);cursor:pointer" onclick="closeAdmin()">← Volver a la landing</p>
-  </div>
-
-  <!-- PANEL INTERIOR -->
-  <div id="admin-panel">
-    <div class="panel-header">
-      <div class="panel-title">Panel de Administración</div>
-      <button class="close-btn" onclick="closeAdmin()">✕ Cerrar</button>
-    </div>
-
-    <!-- MÉTRICAS -->
-    <div class="panel-grid">
-      <div class="metric">
-        <div class="metric-val blue" id="m-total">0</div>
-        <div class="metric-label">En lista de espera</div>
-      </div>
-      <div class="metric">
-        <div class="metric-val green" id="m-beta">0</div>
-        <div class="metric-label">Beta testers activos</div>
-      </div>
-      <div class="metric">
-        <div class="metric-val purple" id="m-pending">0</div>
-        <div class="metric-label">Pendientes de revisión</div>
-      </div>
-      <div class="metric">
-        <div class="metric-val" style="color:#fb923c" id="m-changes">0</div>
-        <div class="metric-label">Cambios registrados</div>
-      </div>
-    </div>
-
-    <!-- LISTA DE ESPERA -->
-    <div class="panel-section-title">Lista de Espera</div>
-    <table class="wl-table" id="wl-table-el">
-      <thead><tr>
-        <th>#</th><th>Email</th><th>Fecha</th><th>Estado</th><th>Acciones</th>
-      </tr></thead>
-      <tbody id="wl-tbody"></tbody>
-    </table>
-
-    <!-- INVITAR BETA TESTER -->
-    <div class="panel-section-title">Agregar / Invitar Beta Tester</div>
-    <div class="invite-form">
-      <input class="inv-input" type="email" id="inv-email" placeholder="correo@ejemplo.com"/>
-      <select class="inv-input" id="inv-days" style="flex:0;width:auto">
-        <option value="7">7 días</option>
-        <option value="14" selected>14 días</option>
-        <option value="30">30 días</option>
-        <option value="90">90 días</option>
-        <option value="0">Sin límite</option>
-      </select>
-      <button class="btn-sm" onclick="inviteBeta()">+ Invitar como Beta</button>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- LOG DE CAMBIOS -->
-    <div class="panel-section-title">Registro de Cambios del Proyecto</div>
-    <div class="changes-list" id="changes-list"></div>
-    <div class="invite-form" style="margin-top:0">
-      <input class="inv-input" id="change-text" placeholder="Describe el cambio o actualización..."/>
-      <select class="inv-input" id="change-type" style="flex:0;width:auto">
-        <option value="blue">🔵 Nuevo</option>
-        <option value="green">🟢 Mejora</option>
-        <option value="purple">🟣 Fix</option>
-      </select>
-      <button class="btn-sm green" onclick="addChange()">+ Agregar</button>
-    </div>
-
-  </div><!-- /admin-panel -->
-</div><!-- /admin-overlay -->
-
-
-<script>
-// ════════════════════════════
-// FONDO ANIMADO - CANVAS
-// ════════════════════════════
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-let W, H, particles = [];
-
-function resize(){
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-class Particle {
-  constructor(){this.reset()}
-  reset(){
-    this.x = Math.random()*W;
-    this.y = Math.random()*H;
-    this.vx = (Math.random()-0.5)*0.3;
-    this.vy = (Math.random()-0.5)*0.3;
-    this.size = Math.random()*1.8+0.2;
-    this.alpha = Math.random()*0.5+0.05;
-    this.color = Math.random()<0.6 ? '#4f9eff' : Math.random()<0.5 ? '#a78bfa' : '#34d399';
-  }
-  update(){
-    this.x+=this.vx; this.y+=this.vy;
-    if(this.x<0||this.x>W||this.y<0||this.y>H) this.reset();
-  }
-  draw(){
-    ctx.beginPath();
-    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-    ctx.fillStyle = this.color;
-    ctx.globalAlpha = this.alpha;
-    ctx.fill();
-    ctx.globalAlpha = 1;
-  }
-}
-
-for(let i=0;i<120;i++) particles.push(new Particle());
-
-// Líneas de conexión
-function drawConnections(){
-  for(let i=0;i<particles.length;i++){
-    for(let j=i+1;j<particles.length;j++){
-      const dx=particles[i].x-particles[j].x;
-      const dy=particles[i].y-particles[j].y;
-      const dist=Math.sqrt(dx*dx+dy*dy);
-      if(dist<120){
+      // Dibujar 4 capas de ondas de gradiente gris sutil en movimiento
+      for (let i = 0; i < 4; i++) {
         ctx.beginPath();
-        ctx.moveTo(particles[i].x,particles[i].y);
-        ctx.lineTo(particles[j].x,particles[j].y);
-        ctx.strokeStyle='rgba(79,158,255,'+(0.06*(1-dist/120))+')';
-        ctx.lineWidth=0.5;
-        ctx.stroke();
+        const yOffset = height * (0.3 + i * 0.18);
+        ctx.moveTo(0, height);
+        ctx.lineTo(0, yOffset);
+
+        for (let x = 0; x <= width; x += 40) {
+          const wave1 = Math.sin(x * 0.002 + step * (1 + i * 0.4) + i) * 60;
+          const wave2 = Math.cos(x * 0.0015 - step * 0.8 + i) * 40;
+          ctx.lineTo(x, yOffset + wave1 + wave2);
+        }
+
+        ctx.lineTo(width, height);
+        ctx.closePath();
+
+        // Escala de grises pura
+        const shade = 10 + i * 5; // #0a0a0a a #191919
+        ctx.fillStyle = `rgba(${shade}, ${shade}, ${shade}, 0.65)`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(renderAmbient);
+    }
+    renderAmbient();
+
+    // ── GESTIÓN DE ACCESO / HERRAMIENTA DIRECTA ──
+    const PASS = 'NodCoT+2026';
+
+    function openLogin() {
+      const modal = document.getElementById('login-modal');
+      modal.style.display = 'flex';
+      const input = document.getElementById('admin-key');
+      input.value = '';
+      input.focus();
+    }
+
+    function closeLogin() {
+      document.getElementById('login-modal').style.display = 'none';
+    }
+
+    function verifyAccess() {
+      const key = document.getElementById('admin-key').value;
+      if (key === PASS) {
+        closeLogin();
+        openStudio();
+      } else {
+        alert('Clave incorrecta.');
+        document.getElementById('admin-key').value = '';
       }
     }
-  }
-}
 
-// Orbes de fondo
-let t=0;
-function drawOrbs(){
-  t+=0.002;
-  const orbs=[
-    {x:W*0.2+Math.sin(t)*80,  y:H*0.3+Math.cos(t*0.7)*60,  r:350, c:'rgba(79,158,255,0.04)'},
-    {x:W*0.8+Math.cos(t)*60,  y:H*0.6+Math.sin(t*0.8)*80,  r:300, c:'rgba(167,139,250,0.04)'},
-    {x:W*0.5+Math.sin(t*1.2)*120,y:H*0.8+Math.cos(t)*40,  r:280, c:'rgba(52,211,153,0.03)'},
-  ];
-  orbs.forEach(o=>{
-    const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);
-    g.addColorStop(0,o.c);
-    g.addColorStop(1,'transparent');
-    ctx.fillStyle=g;
-    ctx.fillRect(0,0,W,H);
-  });
-}
-
-// Grid suave
-function drawGrid(){
-  ctx.strokeStyle='rgba(255,255,255,0.018)';
-  ctx.lineWidth=0.5;
-  const sz=60;
-  for(let x=0;x<W;x+=sz){
-    ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
-  }
-  for(let y=0;y<H;y+=sz){
-    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
-  }
-}
-
-function animate(){
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#070a0f';
-  ctx.fillRect(0,0,W,H);
-  drawGrid();
-  drawOrbs();
-  drawConnections();
-  particles.forEach(p=>{p.update();p.draw()});
-  requestAnimationFrame(animate);
-}
-animate();
-
-// Parallax suave con el mouse
-document.addEventListener('mousemove',e=>{
-  const fx=(e.clientX/W-0.5)*0.3;
-  const fy=(e.clientY/H-0.5)*0.3;
-  particles.forEach((p,i)=>{
-    if(i%3===0){p.vx+=(fx-p.vx)*0.005;p.vy+=(fy-p.vy)*0.005}
-  });
-});
-
-// Hover spotlight en cards
-document.querySelectorAll('.card').forEach(card=>{
-  card.addEventListener('mousemove',e=>{
-    const r=card.getBoundingClientRect();
-    card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
-    card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
-  });
-});
-
-// ════════════════════════════
-// SCROLL REVEAL
-// ════════════════════════════
-const ro=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
-},{threshold:0.08});
-document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
-
-// ════════════════════════════
-// WAITLIST
-// ════════════════════════════
-function joinWaitlist(e){
-  e.preventDefault();
-  const email=e.target.querySelector('input[type=email]').value.trim();
-  if(!email)return;
-  const data=JSON.parse(localStorage.getItem('wl')||'[]');
-  if(!data.find(d=>d.email===email)){
-    data.push({email,date:new Date().toLocaleString('es'),status:'waiting'});
-    localStorage.setItem('wl',JSON.stringify(data));
-  }
-  e.target.style.display='none';
-  const ok=document.getElementById('wl-ok')||e.target.nextElementSibling;
-  if(ok){ok.style.display='block'}
-}
-
-// ════════════════════════════
-// ADMIN PANEL
-// ════════════════════════════
-const ADMIN_PASS='NodCoT+2026'; // ← Cambia esto cuando quieras
-
-function openAdmin(){
-  document.getElementById('admin-overlay').style.display='block';
-  document.getElementById('admin-login').style.display='flex';
-  document.getElementById('admin-panel').style.display='none';
-  document.getElementById('admin-pass').value='';
-  document.getElementById('admin-err').style.display='none';
-  setTimeout(()=>document.getElementById('admin-pass').focus(),100);
-}
-
-function closeAdmin(){
-  document.getElementById('admin-overlay').style.display='none';
-}
-
-function checkAdmin(){
-  const pass=document.getElementById('admin-pass').value;
-  if(pass===ADMIN_PASS){
-    document.getElementById('admin-login').style.display='none';
-    document.getElementById('admin-panel').style.display='block';
-    loadPanel();
-  } else {
-    document.getElementById('admin-err').style.display='block';
-    document.getElementById('admin-pass').value='';
-  }
-}
-
-function loadPanel(){
-  const data=JSON.parse(localStorage.getItem('wl')||'[]');
-  const changes=JSON.parse(localStorage.getItem('changes')||'[]');
-  const beta=data.filter(d=>d.status==='beta').length;
-  const pending=data.filter(d=>d.status==='waiting').length;
-
-  document.getElementById('m-total').textContent=data.length;
-  document.getElementById('m-beta').textContent=beta;
-  document.getElementById('m-pending').textContent=pending;
-  document.getElementById('m-changes').textContent=changes.length;
-
-  // Tabla waitlist
-  const tbody=document.getElementById('wl-tbody');
-  tbody.innerHTML='';
-  if(data.length===0){
-    tbody.innerHTML='<tr><td colspan="5" style="color:var(--text-muted);text-align:center;padding:24px">Nadie en la lista aún.</td></tr>';
-  } else {
-    data.forEach((d,i)=>{
-      const badge=d.status==='beta'?'s-beta':d.status==='blocked'?'s-blocked':'s-waiting';
-      const label=d.status==='beta'?'Beta Activo':d.status==='blocked'?'Bloqueado':'En espera';
-      const expiry=d.expiry?`<br/><small style="color:var(--text-muted)">Expira: ${d.expiry}</small>`:'';
-      tbody.innerHTML+=`<tr>
-        <td style="color:var(--text-muted)">${i+1}</td>
-        <td style="color:var(--text)">${d.email}</td>
-        <td>${d.date}</td>
-        <td><span class="status-badge ${badge}">${label}</span>${expiry}</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
-          ${d.status!=='beta'?`<button class="btn-sm green" style="padding:6px 12px;font-size:0.75rem" onclick="setStatus(${i},'beta')">→ Beta</button>`:''}
-          ${d.status!=='blocked'?`<button class="btn-sm red" style="padding:6px 12px;font-size:0.75rem" onclick="setStatus(${i},'blocked')">Bloquear</button>`:''}
-          <button class="btn-sm" style="padding:6px 12px;font-size:0.75rem;background:rgba(255,255,255,0.07)" onclick="removeEntry(${i})">✕</button>
-        </td>
-      </tr>`;
-    });
-  }
-
-  // Changes
-  const cl=document.getElementById('changes-list');
-  if(changes.length===0){
-    cl.innerHTML='<div style="padding:20px;color:var(--text-muted);font-size:0.88rem">Sin cambios registrados aún.</div>';
-  } else {
-    cl.innerHTML=changes.slice().reverse().map(c=>`
-      <div class="change-item">
-        <div class="change-dot cd-${c.type}"></div>
-        <div><div class="change-text">${c.text}</div><div class="change-date">${c.date}</div></div>
-      </div>`).join('');
-  }
-}
-
-function setStatus(i,status){
-  const data=JSON.parse(localStorage.getItem('wl')||'[]');
-  data[i].status=status;
-  if(status==='beta'){
-    const days=parseInt(document.getElementById('inv-days').value)||14;
-    if(days>0){
-      const exp=new Date();exp.setDate(exp.getDate()+days);
-      data[i].expiry=exp.toLocaleDateString('es');
+    function openStudio() {
+      document.getElementById('public-view').style.display = 'none';
+      document.getElementById('studio-app').style.display = 'flex';
+      updateLiveFrame();
     }
-  }
-  localStorage.setItem('wl',JSON.stringify(data));
-  loadPanel();
-}
 
-function removeEntry(i){
-  const data=JSON.parse(localStorage.getItem('wl')||'[]');
-  data.splice(i,1);
-  localStorage.setItem('wl',JSON.stringify(data));
-  loadPanel();
-}
+    function closeStudio() {
+      document.getElementById('studio-app').style.display = 'none';
+      document.getElementById('public-view').style.display = 'flex';
+    }
 
-function inviteBeta(){
-  const email=document.getElementById('inv-email').value.trim();
-  if(!email)return;
-  const days=parseInt(document.getElementById('inv-days').value)||14;
-  const data=JSON.parse(localStorage.getItem('wl')||'[]');
-  const exp=new Date();if(days>0)exp.setDate(exp.getDate()+days);
-  const existing=data.findIndex(d=>d.email===email);
-  const entry={email,date:new Date().toLocaleString('es'),status:'beta',expiry:days>0?exp.toLocaleDateString('es'):'Sin límite'};
-  if(existing>=0) data[existing]=entry;
-  else data.push(entry);
-  localStorage.setItem('wl',JSON.stringify(data));
-  document.getElementById('inv-email').value='';
-  loadPanel();
-}
+    function togglePreview() {
+      const p = document.getElementById('preview-panel');
+      p.style.display = p.style.display === 'none' ? 'flex' : 'none';
+    }
 
-function addChange(){
-  const text=document.getElementById('change-text').value.trim();
-  const type=document.getElementById('change-type').value;
-  if(!text)return;
-  const changes=JSON.parse(localStorage.getItem('changes')||'[]');
-  changes.push({text,type,date:new Date().toLocaleString('es')});
-  localStorage.setItem('changes',JSON.stringify(changes));
-  document.getElementById('change-text').value='';
-  loadPanel();
-}
+    function logTerm(msg) {
+      const log = document.getElementById('term-log');
+      const div = document.createElement('div');
+      div.textContent = `> ${msg}`;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
 
-// Atajo de teclado secreto: Ctrl+Shift+A
-document.addEventListener('keydown',e=>{
-  if(e.ctrlKey&&e.shiftKey&&e.key==='A') openAdmin();
-  if(e.key==='Escape') closeAdmin();
-});
-</script>
+    function runFlow() {
+      logTerm('Iniciando ejecución del grafo...');
+      document.getElementById('flow-status').textContent = 'Procesando...';
+
+      setTimeout(() => {
+        logTerm('[Harvester] Extracción K-Means completada: 4 colores indexados.');
+      }, 300);
+
+      setTimeout(() => {
+        logTerm('[AI Composer] Síntesis de estructura web finalizada.');
+      }, 700);
+
+      setTimeout(() => {
+        updateLiveFrame();
+        logTerm('[Live Sink] Documento emitido al visualizador en 18ms.');
+        document.getElementById('flow-status').textContent = 'Emitido a Live Browser.';
+      }, 1000);
+    }
+
+    function updateLiveFrame() {
+      const prompt = document.getElementById('ai-prompt').value;
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { margin:0; background:#0d0d0d; color:#e0e0e0; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; text-align:center; padding:20px; }
+            h1 { font-size:1.8rem; margin-bottom:12px; color:#fff; }
+            p { color:#888; max-width:400px; font-size:0.9rem; line-height:1.6; }
+            .badge { font-size:0.7rem; font-family:monospace; background:#222; color:#aaa; padding:4px 8px; border-radius:4px; margin-bottom:16px; border:1px solid #333; }
+            .btn { background:#fff; color:#000; border:none; padding:10px 20px; font-weight:bold; border-radius:4px; margin-top:20px; cursor:pointer; }
+          </style>
+        </head>
+        <body>
+          <div class="badge">NodCoT+ Live Preview</div>
+          <h1>${prompt}</h1>
+          <p>Renderizado en tiempo real por el motor de nodos de NodCoT+.</p>
+          <button class="btn">Interactuar</button>
+        </body>
+        </html>
+      `;
+      document.getElementById('sim-frame').srcdoc = html;
+    }
+
+    function handleWaitlist(e) {
+      e.preventDefault();
+      document.querySelector('.waitlist-box').style.display = 'none';
+      document.getElementById('wl-msg').style.display = 'block';
+    }
+
+    // Atajo directo para devs: Ctrl+Shift+A
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        openLogin();
+      }
+    });
+  </script>
 </body>
 </html>
