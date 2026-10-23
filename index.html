@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="beta-api-base" content="" />
+  <meta name="beta-api-base" content="https://script.google.com/macros/s/AKfycbw_qGl3AsCTuEMDhwvVhbNbyP3kXLEkXanDoE5_I8jrrNnQueei6AMJtmY5_lL9rpMevw/exec" />
   <title>NodCoT+ — Construcción por Nodos, Código e Inteligencia Artificial</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -232,6 +232,7 @@
     .redeem-form button { justify-self:start; }
     .form-msg { display:none; margin-top:13px; font-size:.85rem; color:#c5d3ff; }
     .consent-line { display:flex; align-items:flex-start; gap:9px; width:100%; padding:5px 8px 3px; color:#aeb3c1; font-size:.77rem; line-height:1.5; }
+    .beta-trap { position:absolute !important; left:-10000px !important; width:1px !important; height:1px !important; overflow:hidden !important; }
     .waitlist-form .consent-line input { flex:none; width:16px; height:16px; margin:2px 0 0; accent-color:#a78bfa; }
     .privacy-note { margin-top:12px; max-width:640px; color:#858b9b; font-size:.75rem; }
     @media (max-width: 600px) { .beta-card,.redeem-card { padding:20px; } .waitlist-form { flex-direction:column; } }
@@ -550,21 +551,22 @@
       <div class="beta-card" id="beta">
         <div class="card-badge">Acceso anticipado · cupo limitado</div>
         <h2 class="card-title">100 invitaciones para probar NodCoT+ completo gratis durante 1 mes</h2>
-        <p class="card-desc">Las primeras 100 personas elegibles recibirán por Gmail un código especial. Canjéalo con el mismo correo al que llegue la invitación; el mes gratis empezará al activarlo. No hay cobro por participar. El envío y el conteo se activarán cuando el sistema de invitaciones esté conectado.</p>
+        <p class="card-desc">Aparta tu lugar desde ahora. Los primeros 100 registros recibirán su código personal por Gmail el 10 de marzo de 2027. Canjéalo con el mismo correo para iniciar 30 días de acceso beta. Al completarse los 100 lugares, el registro cerrará y no guardaremos más correos.</p>
         <a class="btn-submit beta-cta" href="#redeem">Tengo un código</a>
       </div>
       <form class="waitlist-form" id="waitlist-form">
         <input name="email" type="email" autocomplete="email" placeholder="Tu correo para recibir invitación beta..." required aria-label="Correo electrónico" />
-        <label class="consent-line"><input name="consent" type="checkbox" required /> <span>Acepto que NodCoT+ use mi correo únicamente para gestionar esta invitación beta.</span></label>
+        <label class="consent-line"><input name="consent" type="checkbox" required /> <span>Solicito apartar un lugar y acepto que InnovA+ use mi correo para gestionar y enviarme el código beta. Leí el <a href="./privacidad.html" target="_blank" rel="noopener">aviso de privacidad</a>.</span></label>
+        <label class="beta-trap" aria-hidden="true">Deja este campo vacío<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
         <button type="submit" class="btn-submit">Pedir invitación</button>
       </form>
       <div id="wl-msg" class="form-msg" role="status" aria-live="polite"></div>
-      <p class="privacy-note">Tu correo y la fecha de consentimiento se guardan en una hoja privada de Google accesible solo por el administrador. No se publican ni se comparten. Puedes solicitar la eliminación por el canal de contacto del proyecto.</p>
+      <p class="privacy-note">El lugar queda apartado al confirmar el formulario; no se envía el código ahora. Consulta el <a href="./privacidad.html">aviso de privacidad</a> o solicita eliminación en <a href="mailto:innovamotivatechmasalladelosli@gmail.com">innovamotivatechmasalladelosli@gmail.com</a>.</p>
 
       <section class="redeem-card" id="redeem" aria-labelledby="redeem-title">
         <div class="card-badge">Canje de invitación · beta</div>
         <h2 class="card-title" id="redeem-title">¿Ya tienes tu código?</h2>
-        <p class="card-desc">Ingresa el correo donde recibiste la invitación y el código de un solo uso. La validación segura confirmará si aún hay cupo y activará el acceso por 30 días.</p>
+        <p class="card-desc">Desde el 10 de marzo de 2027, ingresa el mismo correo donde recibiste la invitación y tu código de un solo uso. Al canjearlo, comienza el periodo beta de 30 días.</p>
         <form id="redeem-form" class="redeem-form">
           <label for="redeem-email">Correo de la invitación</label>
           <input id="redeem-email" name="email" type="email" autocomplete="email" required placeholder="nombre@ejemplo.com" />
@@ -905,6 +907,7 @@
       document.getElementById('sim-frame').srcdoc = html;
     }
 
+    window.nodcotBetaPageStartedAt = Date.now();
     const betaApiUrl = (document.querySelector('meta[name="beta-api-base"]')?.content || '').trim();
     let betaBridgeFrame = null;
     let betaBridgeReady = null;
@@ -962,7 +965,10 @@
       const button = form.querySelector('button[type="submit"]');
       const payload = Object.fromEntries(new FormData(form).entries());
       payload.action = kind;
-      if (kind === 'waitlist') payload.consent = form.elements.consent.checked;
+      if (kind === 'waitlist') {
+        payload.consent = form.elements.consent.checked;
+        payload.startedAt = window.nodcotBetaPageStartedAt;
+      }
       statusNode.style.display = 'block';
       statusNode.textContent = 'Conectando con el servicio seguro…';
       button.disabled = true;
