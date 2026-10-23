@@ -103,10 +103,25 @@
 
     .header-links {
       display: flex;
-      gap: 20px;
+      gap: clamp(12px, 2vw, 24px);
       align-items: center;
       font-size: 0.82rem;
       color: var(--text-muted);
+    }
+    .nav-link, .nav-item { color: var(--text-muted); text-decoration: none; white-space: nowrap; }
+    .nav-link { transition: color .2s ease; }
+    .nav-link:hover { color: var(--text); }
+    .nav-item.upcoming { display: inline-flex; align-items: center; gap: 6px; }
+    .nav-item small { color: #a78bfa; font-size: .62rem; letter-spacing: .02em; }
+    @media (max-width: 700px) {
+      header { padding: 17px 18px; align-items: flex-start; gap: 18px; }
+      .header-links { justify-content: flex-end; flex-wrap: wrap; gap: 8px 14px; font-size: .72rem; }
+      .nav-item.upcoming { gap: 4px; }
+      .nav-item small { font-size: .57rem; }
+    }
+    @media (max-width: 440px) {
+      header { flex-direction: column; align-items: stretch; gap: 12px; }
+      .header-links { justify-content: flex-start; }
     }
 
     /* ── HERO ── */
@@ -492,18 +507,20 @@
 
   <!-- VISTA PÚBLICA / LANDING -->
   <div class="content-wrapper" id="public-view">
-    <header>
+    <header id="top">
       <!-- Clic secreto: 5 toques en el logo abren el Studio -->
       <div class="brand" id="brand-trigger" title="NodCoT+">
         NodCoT+
       </div>
-      <div class="header-links">
-        <span>Comunidad & Flujos</span>
-      </div>
+      <nav class="header-links" aria-label="Navegación principal">
+        <a href="#top" class="nav-link">Inicio</a>
+        <span class="nav-item upcoming" aria-disabled="true">Iniciar sesión <small>Próximamente</small></span>
+        <span class="nav-item upcoming" aria-disabled="true">Suscripciones <small>Próximamente</small></span>
+        <a href="#beta" class="nav-link">Invitaciones Gmail</a>
+      </nav>
     </header>
 
     <main class="hero">
-      <div class="pill">Plataforma de Automatización & Creación Visual</div>
       <h1>
         Crea cualquier cosa con nodos.<br/>
         <span>Para creadores y desarrolladores.</span>
