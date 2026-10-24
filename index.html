@@ -511,6 +511,35 @@
     }
 
     .term-log div { margin-bottom: 4px; }
+
+    /* ── MAPA VISUAL Y EXPLICACIÓN PARA PERSONAS NO TÉCNICAS ── */
+    .concept-map { max-width: 960px; margin: 34px auto 0; padding: 28px; border: 1px solid rgba(167,139,250,.25); border-radius: 14px; background: linear-gradient(135deg, rgba(28,30,48,.82), rgba(12,13,18,.78)); box-shadow: 0 18px 55px rgba(0,0,0,.22); }
+    .concept-intro { max-width: 700px; }
+    .concept-intro h2 { margin: 8px 0 9px; font-size: clamp(1.45rem, 3vw, 2.2rem); line-height: 1.12; }
+    .concept-intro p { color: var(--text-muted); font-size: .95rem; line-height: 1.65; }
+    .concept-flow { display: flex; align-items: stretch; gap: 10px; margin-top: 24px; }
+    .concept-node { flex: 1; min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: rgba(255,255,255,.035); }
+    .concept-node-accent { border-color: rgba(52,211,153,.35); background: rgba(52,211,153,.07); }
+    .concept-number { display: block; margin-bottom: 8px; color: #a78bfa; font: 700 .68rem var(--mono); }
+    .concept-node strong, .concept-node small { display: block; }
+    .concept-node strong { font-size: .98rem; }
+    .concept-node small { margin-top: 7px; color: var(--text-muted); font-size: .76rem; line-height: 1.45; }
+    .concept-arrow { align-self: center; color: #4f9eff; font: 700 1.25rem var(--mono); }
+    .plain-language-section { max-width: 960px; margin: -40px auto 80px; padding: 0 24px; }
+    .plain-language-card { border-color: rgba(79,158,255,.24); }
+    .plain-language-card .card-title { font-size: clamp(1.3rem, 2.5vw, 1.8rem); }
+    .plain-language-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+    .plain-language-grid div { padding: 13px; border-radius: 8px; background: rgba(255,255,255,.035); }
+    .plain-language-grid strong, .plain-language-grid span { display: block; }
+    .plain-language-grid strong { font-size: .82rem; }
+    .plain-language-grid span { margin-top: 5px; color: var(--text-muted); font-size: .75rem; line-height: 1.4; }
+
+    /* El fondo conserva una base estable mientras el contenido se desplaza. */
+    html, body { background: #0b0e15; overscroll-behavior-x: none; }
+    #ambient-canvas { background: #0b0e15; contain: paint; transform: translateZ(0); backface-visibility: hidden; }
+    .noise-overlay { opacity: .07; animation-duration: 1.2s; mix-blend-mode: normal; }
+    @media (max-width: 760px) { .concept-flow { flex-direction: column; } .concept-arrow { transform: rotate(90deg); align-self: center; } .plain-language-grid { grid-template-columns: 1fr; } .concept-map { margin-inline: 18px; padding: 20px; } .plain-language-section { margin-top: -35px; } }
+
   </style>
 </head>
 <body>
@@ -543,15 +572,32 @@
         <span>Para creadores y desarrolladores.</span>
       </h1>
       <p class="hero-desc">
-        NodCoT+ reúne creación visual por nodos, código ICod, herramientas de IA y una vista previa
-        en vivo. Empieza conectando bloques en un lienzo; cuando necesites más control, abre y ajusta
-        el código. Cada paso del flujo se puede probar y revisar en el simulador.
+        NodCoT+ convierte una idea en un flujo que puedes entender, construir y publicar: conecta nodos visuales,
+        deja que la IA te ayude a investigar o crear, abre el código ICod cuando quieras control y revisa el resultado
+        en vivo. No necesitas saber programar para empezar ni aprender cinco herramientas separadas para sacar tu web.
       </p>
+
+      <section class="concept-map" aria-labelledby="concept-map-title">
+        <div class="concept-intro">
+          <div class="card-badge">Cómo funciona · en una mirada</div>
+          <h2 id="concept-map-title">De “quiero una web” a “ya está lista para publicar”.</h2>
+          <p>La innovación de NodCoT+ es unir la idea, la lógica, el diseño y la publicación en un mismo mapa. Cada bloque hace una tarea concreta y cada conexión muestra qué pasa después.</p>
+        </div>
+        <div class="concept-flow" aria-label="Flujo de cuatro nodos para crear y publicar una web">
+          <div class="concept-node"><span class="concept-number">01</span><strong>Idea</strong><small>Describe lo que quieres en lenguaje normal.</small></div>
+          <span class="concept-arrow" aria-hidden="true">→</span>
+          <div class="concept-node"><span class="concept-number">02</span><strong>Construcción</strong><small>Conecta diseño, IA, datos y lógica.</small></div>
+          <span class="concept-arrow" aria-hidden="true">→</span>
+          <div class="concept-node"><span class="concept-number">03</span><strong>Prueba</strong><small>Ve el resultado en el simulador vivo.</small></div>
+          <span class="concept-arrow" aria-hidden="true">→</span>
+          <div class="concept-node concept-node-accent"><span class="concept-number">04</span><strong>Publicación</strong><small>Prepara hosting, dominio y siguientes pasos.</small></div>
+        </div>
+      </section>
 
       <div class="beta-card" id="beta">
         <div class="card-badge">Acceso anticipado · cupo limitado</div>
-        <h2 class="card-title">100 invitaciones para probar NodCoT+ completo gratis durante 1 mes</h2>
-        <p class="card-desc">Aparta tu lugar desde ahora. Los primeros 100 registros recibirán su código personal por Gmail el 10 de marzo de 2027. Canjéalo con el mismo correo para iniciar 30 días de acceso beta. Al completarse los 100 lugares, el registro cerrará y no guardaremos más correos.</p>
+        <h2 class="card-title">Aparta tu lugar para probar NodCoT+ gratis durante 1 mes</h2>
+        <p class="card-desc">Tu correo queda registrado para apartar un lugar dentro de los primeros 100 registros confirmados; no es un sorteo ni un “premio” automático. Recibirás tu código personal por Gmail el 10 de marzo de 2027 y podrás canjearlo con el mismo correo para iniciar 30 días de acceso beta. Al completarse los 100 lugares, el registro cerrará y no guardaremos más correos.</p>
         <a class="btn-submit beta-cta" href="#redeem">Tengo un código</a>
       </div>
       <form class="waitlist-form" id="waitlist-form">
@@ -578,6 +624,19 @@
         <p class="privacy-note">El código y el correo se validan en el servidor; nunca se guardan en este navegador. Cada invitación se puede usar una sola vez.</p>
       </section>
     </main>
+
+    <section class="plain-language-section" aria-labelledby="plain-language-title">
+      <div class="card plain-language-card">
+        <div class="card-badge">También para empezar desde cero</div>
+        <h2 class="card-title" id="plain-language-title">No solo busca lo que aparece en esta página.</h2>
+        <p class="card-desc">Puedes preguntarle por cualquier tema: comparar hostings, entender qué dominio necesitas, organizar una investigación, convertir una idea en pasos, generar una estructura de sitio o decidir qué servicio te conviene. NodCoT+ ordena la respuesta por capas para que primero entiendas lo esencial y después puedas profundizar.</p>
+        <div class="plain-language-grid">
+          <div><strong>¿Qué necesito?</strong><span>Guía sencilla, opciones y checklist.</span></div>
+          <div><strong>¿Cómo se construye?</strong><span>Nodos conectados y código visible.</span></div>
+          <div><strong>¿Cómo lo publico?</strong><span>Ruta clara hacia dominio y hosting.</span></div>
+        </div>
+      </div>
+    </section>
 
     <section class="features-section">
       <div class="features-grid">
