@@ -41,17 +41,21 @@
 
     /* ── FONDO NEGRO/GRIS DINÁMICO CON LUCES EN MOVIMIENTO Y RUIDO ── */
     #ambient-canvas {
-      position: fixed;
+      position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
+      min-height: 100%;
       z-index: 0;
       pointer-events: none;
+      display: block;
+      background: var(--bg);
     }
 
     .noise-overlay {
-      position: fixed;
+      position: absolute;
       inset: 0;
+      min-height: 100%;
       z-index: 1;
       pointer-events: none;
       opacity: 0.14;
@@ -733,11 +737,22 @@
     let W, H;
 
     function resize() {
+      const pageHeight = Math.max(
+        window.innerHeight,
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight
+      );
       W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
+      H = canvas.height = pageHeight;
+      canvas.style.height = `${pageHeight}px`;
+      const noise = document.querySelector('.noise-overlay');
+      if (noise) noise.style.height = `${pageHeight}px`;
     }
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(resize).observe(document.getElementById('public-view'));
+    }
 
     // Luces suaves dinámicas en tonos neutros/grises oscuros y blancos suaves
     const lights = [
